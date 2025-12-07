@@ -4,8 +4,9 @@ import 'package:codit_competition/screens/start_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
 import 'package:lottie/lottie.dart';
+import 'package:supabase/supabase.dart';
 
-class ResultsScreen extends StatelessWidget {
+class ResultsScreen extends StatefulWidget {
   const ResultsScreen({
     super.key,
     required this.team1Score,
@@ -17,9 +18,41 @@ class ResultsScreen extends StatelessWidget {
   final int team2Score;
   final String team1Name;
   final String team2Name;
+
+  @override
+  State<ResultsScreen> createState() => _ResultsScreenState();
+}
+
+class _ResultsScreenState extends State<ResultsScreen> {
+  final supabase = SupabaseClient(
+    'https://ilqgkzpjerddesusoakh.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlscWdrenBqZXJkZGVzdXNvYWtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwNDc1MjYsImV4cCI6MjA4MDYyMzUyNn0.J69owVnVbKuO8_IfLgWrauWfLZ3UaLVvYrTjSRO3lVA',
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _saveResults();
+  }
+
+  Future<void> _saveResults() async {
+    try {
+      await supabase.from('teams').insert({
+        'team1': widget.team1Name,
+        'team2': widget.team2Name,
+        'created_at': DateTime.now().toIso8601String(),
+        'team1Score': widget.team1Score,
+        'team2Score': widget.team2Score, // FIXED
+      });
+    } catch (e) {
+      print("Error saving results: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -28,13 +61,12 @@ class ResultsScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                team1Score != team2Score
+                widget.team1Score != widget.team2Score
                     ? Text(
-                      "Congrats, ${team1Score > team2Score ? team1Name : team2Name} won \n with a score of ${max(team1Score, team2Score)}",
+                      "Congrats, ${widget.team1Score > widget.team2Score ? widget.team1Name : widget.team2Name} won \n with a score of ${max(widget.team1Score, widget.team2Score)}",
                       textAlign: TextAlign.center,
                       style: GoogleFonts.aBeeZee(
                         color: Colors.black,
-
                         fontWeight: FontWeight.bold,
                         fontSize: width > 700 ? 80 : 40,
                       ),
@@ -48,14 +80,39 @@ class ResultsScreen extends StatelessWidget {
                         fontSize: width > 700 ? 80 : 40,
                       ),
                     ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => StartScreen()),
-                    );
-                  },
-                  child: Text("Go back to start"),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    gradient: LinearGradient(
+                      colors: [
+                        const Color.fromARGB(255, 5, 59, 104),
+                        Colors.blue,
+                      ],
+                    ),
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 15,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => StartScreen()),
+                      );
+                    },
+                    child: Text(
+                      "Go back to start",
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
                 ),
               ],
             ),

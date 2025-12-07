@@ -79,15 +79,15 @@ class _LoadscreenState extends State<Loadscreen> {
                 borderRadius: BorderRadius.circular(50),
               ),
               child: SizedBox(
-                width: 400,
-                height: 400,
+                width: width > 700 ? 400 : 250,
+                height: width > 700 ? 400 : 250,
                 child: Center(
                   child: Text(
                     "$_counter",
                     style: GoogleFonts.aBeeZee(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 200,
+                      fontSize: width > 700 ? 200 : 125,
                     ),
                   ),
                 ),

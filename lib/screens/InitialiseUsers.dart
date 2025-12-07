@@ -2,7 +2,6 @@ import 'package:codit_competition/screens/LoadScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:supabase/supabase.dart';
 
 class TeamInputScreen extends StatefulWidget {
   const TeamInputScreen({super.key, required this.competition});
@@ -17,10 +16,8 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
 
   String team1 = "";
   String team2 = "";
-  final supabase = SupabaseClient(
-    'https://ilqgkzpjerddesusoakh.supabase.co', // your URL
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlscWdrenBqZXJkZGVzdXNvYWtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwNDc1MjYsImV4cCI6MjA4MDYyMzUyNn0.J69owVnVbKuO8_IfLgWrauWfLZ3UaLVvYrTjSRO3lVA', // your anon key
-  ); // Make sure Supabase is initialized
+  String userName = "";
+  // Make sure Supabase is initialized
 
   Future<void> _saveTeams() async {
     team1 = _team1Controller.text.trim();
@@ -34,11 +31,6 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
     }
 
     try {
-      await supabase.from('teams').insert({
-        'team1': team1,
-        'team2': team2,
-        'created_at': DateTime.now().toIso8601String(),
-      });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Teams saved successfully!")),
       );
@@ -166,7 +158,9 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "Note: Team 1 will be on the Left and Team 2 will be on the Right",
+                    width > 700
+                        ? "Note: Team 1 will be on the Left and Team 2 will be on the Right"
+                        : "",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.aBeeZee(
                       color: Colors.white,

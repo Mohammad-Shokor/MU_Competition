@@ -1,4 +1,3 @@
-import 'package:codit_competition/screens/competition_screen.dart';
 import 'package:codit_competition/screens/start_screen.dart';
 import 'package:flutter/material.dart';
 

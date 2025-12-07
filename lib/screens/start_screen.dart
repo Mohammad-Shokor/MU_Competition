@@ -1,4 +1,4 @@
-import 'package:codit_competition/screens/LoadScreen.dart';
+import 'package:codit_competition/screens/competition_screen_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -101,7 +101,12 @@ class _StartScreenState extends State<StartScreen>
                             context,
                             "Business Club",
                             "assets/Business.json",
-                            TeamInputScreen(competition: "Business Club"),
+                            width > 700
+                                ? TeamInputScreen(competition: "Business Club")
+                                : CompetitionScreenMobile(
+                                  competitionType: "Business Club",
+                                  userName: "mhmd",
+                                ),
                             width,
                           ),
                         ],
@@ -122,7 +127,12 @@ class _StartScreenState extends State<StartScreen>
                             context,
                             "Business Club",
                             "assets/Business.json",
-                            TeamInputScreen(competition: "Business Club"),
+                            width > 700
+                                ? TeamInputScreen(competition: "Business Club")
+                                : CompetitionScreenMobile(
+                                  competitionType: "Business Club",
+                                  userName: "mhmd",
+                                ),
                             width,
                           ),
                         ],
