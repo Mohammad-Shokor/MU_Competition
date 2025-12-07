@@ -284,15 +284,15 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
                       style: GoogleFonts.aBeeZee(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: width > 700 ? 40 : 28,
+                        fontSize: width > 700 ? 40 : 24,
                       ),
                     ),
                   ),
-                  SizedBox(height: 50),
+                  SizedBox(height: 30),
                   // ANSWERS
                   Expanded(
                     child: Column(
-                      spacing: 20,
+                      spacing: 15,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children:
                           shownAnswers[index].map((answer) {
@@ -346,7 +346,7 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
                                   answer,
                                   style: GoogleFonts.aBeeZee(
                                     fontWeight: FontWeight.w500,
-                                    fontSize: width > 700 ? 25 : 18,
+                                    fontSize: 18,
                                   ),
                                 ),
                               ),
