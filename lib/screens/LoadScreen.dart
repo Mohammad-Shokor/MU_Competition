@@ -22,6 +22,7 @@ class _LoadscreenState extends State<Loadscreen> {
   int _counter = 5;
   Timer? _timer;
   late String comp;
+  bool DarkMode = true;
   @override
   void initState() {
     super.initState();
@@ -75,8 +76,15 @@ class _LoadscreenState extends State<Loadscreen> {
           Center(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.18),
+                color:
+                    DarkMode
+                        ? Colors.black.withOpacity(0.4)
+                        : Colors.white.withOpacity(0.18),
                 borderRadius: BorderRadius.circular(50),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.3),
+                  width: DarkMode ? 3 : 0,
+                ),
               ),
               child: SizedBox(
                 width: width > 700 ? 400 : 250,

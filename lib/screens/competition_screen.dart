@@ -29,7 +29,7 @@ class _CompetitionScreenState extends State<CompetitionScreen>
   late List<List<String>> answers;
   late List<String> shownQuestions;
   late List<List<String>> shownAnswers;
-
+  bool DarkMode = true;
   late String team1 = widget.team1;
   late String team2 = widget.team2;
   int team1Score = 0;
@@ -403,11 +403,15 @@ class _CompetitionScreenState extends State<CompetitionScreen>
                                           if (states.contains(
                                             MaterialState.disabled,
                                           )) {
-                                            return Colors.black.withOpacity(
-                                              0.2,
-                                            );
+                                            return DarkMode
+                                                ? Colors.black.withOpacity(0.2)
+                                                : Colors.blueGrey.withOpacity(
+                                                  0.3,
+                                                );
                                           }
-                                          return Colors.black.withOpacity(0.5);
+                                          return DarkMode
+                                              ? Colors.black.withOpacity(0.5)
+                                              : Colors.white.withOpacity(0.18);
                                         }),
                                     foregroundColor:
                                         MaterialStateProperty.resolveWith((
@@ -476,7 +480,10 @@ class _CompetitionScreenState extends State<CompetitionScreen>
 
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.5),
+                                    color:
+                                        DarkMode
+                                            ? Colors.black.withOpacity(0.5)
+                                            : Colors.white.withOpacity(0.18),
                                     borderRadius: BorderRadius.circular(50),
                                     border: Border.all(
                                       color: Colors.white.withOpacity(0.3),
@@ -536,7 +543,10 @@ class _CompetitionScreenState extends State<CompetitionScreen>
 
                             Container(
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.18),
+                                color:
+                                    DarkMode
+                                        ? Colors.black.withOpacity(0.5)
+                                        : Colors.white.withOpacity(0.18),
                                 borderRadius: BorderRadius.circular(50),
                               ),
                               child: SizedBox(
@@ -604,7 +614,10 @@ class _CompetitionScreenState extends State<CompetitionScreen>
         ? Expanded(
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.5),
+              color:
+                  DarkMode
+                      ? Colors.black.withOpacity(0.5)
+                      : Colors.white.withOpacity(0.18),
               borderRadius: BorderRadius.circular(25),
               border: Border.all(
                 color: Colors.white.withOpacity(0.3),
@@ -634,7 +647,10 @@ class _CompetitionScreenState extends State<CompetitionScreen>
         : Container(
           width: 100,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.18),
+            color:
+                DarkMode
+                    ? Colors.black.withOpacity(0.5)
+                    : Colors.white.withOpacity(0.18),
             borderRadius: BorderRadius.circular(25),
           ),
           child: Column(
@@ -676,7 +692,10 @@ class _CompetitionScreenState extends State<CompetitionScreen>
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(color: color, width: 10),
-              color: Colors.black.withOpacity(0.5),
+              color:
+                  DarkMode
+                      ? Colors.black.withOpacity(0.5)
+                      : Colors.white.withOpacity(0.18),
               borderRadius: BorderRadius.circular(25),
             ),
             child: Column(
@@ -709,7 +728,10 @@ class _CompetitionScreenState extends State<CompetitionScreen>
           width: 100,
           decoration: BoxDecoration(
             border: Border.all(color: color, width: 6),
-            color: Colors.black.withOpacity(0.2),
+            color:
+                DarkMode
+                    ? Colors.black.withOpacity(0.5)
+                    : Colors.white.withOpacity(0.18),
             borderRadius: BorderRadius.circular(25),
           ),
           child: Column(

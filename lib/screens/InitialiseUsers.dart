@@ -15,7 +15,7 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
   final _team1Controller = TextEditingController();
   final _team2Controller = TextEditingController();
   final _UserNameController = TextEditingController();
-
+  bool DarkMode = true;
   String team1 = "";
   String team2 = "";
   String userName = "";
@@ -70,6 +70,12 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
         },
       ),
     );
+  }
+
+  Color get containerColor {
+    return DarkMode
+        ? Colors.black.withOpacity(0.5)
+        : Colors.white.withOpacity(0.18);
   }
 
   @override
@@ -131,7 +137,7 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.18),
+              color: containerColor,
               borderRadius: BorderRadius.circular(50),
             ),
             width: width > 700 ? 400 : 300,
@@ -166,7 +172,10 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
                 ElevatedButton(
                   onPressed: _saveUserName,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white.withOpacity(0.3),
+                    backgroundColor:
+                        DarkMode
+                            ? Colors.black.withOpacity(0.4)
+                            : Colors.white.withOpacity(0.3),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 50,
                       vertical: 15,
@@ -201,7 +210,7 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.18),
+              color: containerColor,
               borderRadius: BorderRadius.circular(50),
             ),
             width: width > 700 ? 400 : 300,
@@ -260,14 +269,22 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
                 const SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: _saveTeams,
+
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white.withOpacity(0.3),
+                    backgroundColor:
+                        DarkMode
+                            ? Colors.black.withOpacity(0.3)
+                            : Colors.white.withOpacity(0.3),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 50,
                       vertical: 15,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
+                      side: BorderSide(
+                        color: Colors.white, // border color
+                        width: 1, // border thickness
+                      ),
                     ),
                   ),
                   child: Text(
