@@ -35,7 +35,7 @@ class _CompetitionScreenState extends State<CompetitionScreen>
   int team1Score = 0;
   int team2Score = 0;
 
-  int _secondsRemaining = 10;
+  int _secondsRemaining = 15;
   Timer? _timer;
   int currentTeam = 1;
 
@@ -97,7 +97,12 @@ class _CompetitionScreenState extends State<CompetitionScreen>
       selectedAnswer = null;
       buttonsEnabled = false;
     });
-
+    if (!check) {
+      setState(() {
+        buttonsEnabled = true;
+      });
+      return;
+    }
     Future.delayed(const Duration(seconds: 3), () {
       if (!mounted) return;
       setState(() {
@@ -112,6 +117,9 @@ class _CompetitionScreenState extends State<CompetitionScreen>
   void startTimer() {
     _timer?.cancel();
     _secondsRemaining = 15;
+    if (check) {
+      _secondsRemaining = 18;
+    }
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_secondsRemaining <= 0) {
@@ -331,21 +339,39 @@ class _CompetitionScreenState extends State<CompetitionScreen>
                     Expanded(
                       flex: 2,
                       child: Center(
-                        child: Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: Text(
-                            question[index],
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.aBeeZee(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: width > 700 ? 40 : 28,
+                        child: AnimatedSwitcher(
+                          duration: Duration(seconds: 1),
+                          child: Container(
+                            key: ValueKey(question[index]),
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(25),
+
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.3),
+                                width: 1,
+                              ),
+                            ),
+                            child: Text(
+                              question[index],
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.aBeeZee(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: width > 700 ? 40 : 28,
+                              ),
                             ),
                           ),
+                          // transitionBuilder: (
+                          //   Widget child,
+                          //   Animation<double> animation,
+                          // ) {
+                          //   return ScaleTransition(
+                          //     scale: animation,
+                          //     child: child,
+                          //   );
+                          // },
                         ),
                       ),
                     ),
@@ -377,11 +403,11 @@ class _CompetitionScreenState extends State<CompetitionScreen>
                                           if (states.contains(
                                             MaterialState.disabled,
                                           )) {
-                                            return Colors.blueGrey.withOpacity(
-                                              0.3,
+                                            return Colors.black.withOpacity(
+                                              0.2,
                                             );
                                           }
-                                          return Colors.white.withOpacity(0.25);
+                                          return Colors.black.withOpacity(0.5);
                                         }),
                                     foregroundColor:
                                         MaterialStateProperty.resolveWith((
@@ -399,6 +425,10 @@ class _CompetitionScreenState extends State<CompetitionScreen>
                                     shape: MaterialStateProperty.all(
                                       RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(20),
+                                        side: BorderSide(
+                                          color: Colors.white.withOpacity(0.3),
+                                          width: 1,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -406,11 +436,15 @@ class _CompetitionScreenState extends State<CompetitionScreen>
                                       buttonsEnabled
                                           ? () => answerQuestion(answer)
                                           : null,
-                                  child: Text(
-                                    answer,
-                                    style: GoogleFonts.aBeeZee(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: width > 700 ? 25 : 18,
+                                  child: AnimatedSwitcher(
+                                    duration: Duration(seconds: 1),
+                                    child: Text(
+                                      answer,
+                                      key: ValueKey(answer),
+                                      style: GoogleFonts.aBeeZee(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: width > 700 ? 25 : 18,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -442,17 +476,29 @@ class _CompetitionScreenState extends State<CompetitionScreen>
 
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.18),
+                                    color: Colors.black.withOpacity(0.5),
                                     borderRadius: BorderRadius.circular(50),
+                                    border: Border.all(
+                                      color: Colors.white.withOpacity(0.3),
+                                      width: 1,
+                                    ),
                                   ),
                                   child: SizedBox(
                                     width: width > 600 ? 0.11 * width : 100,
                                     height: width > 600 ? 0.11 * width : 100,
                                     child: Center(
                                       child: Text(
-                                        "$_secondsRemaining",
+                                        _secondsRemaining > 15
+                                            ? "15"
+                                            : "$_secondsRemaining",
                                         style: GoogleFonts.aBeeZee(
-                                          color: Colors.white,
+                                          color:
+                                              _secondsRemaining > 15
+                                                  ? Colors.white.withOpacity(
+                                                    0.3,
+                                                  )
+                                                  : Colors.white,
+
                                           fontWeight: FontWeight.bold,
                                           fontSize: width > 700 ? 90 : 40,
                                         ),
@@ -558,8 +604,12 @@ class _CompetitionScreenState extends State<CompetitionScreen>
         ? Expanded(
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.18),
+              color: Colors.black.withOpacity(0.5),
               borderRadius: BorderRadius.circular(25),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.3),
+                width: 10,
+              ),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -626,7 +676,7 @@ class _CompetitionScreenState extends State<CompetitionScreen>
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(color: color, width: 10),
-              color: Colors.white.withOpacity(0.18),
+              color: Colors.black.withOpacity(0.5),
               borderRadius: BorderRadius.circular(25),
             ),
             child: Column(
@@ -659,7 +709,7 @@ class _CompetitionScreenState extends State<CompetitionScreen>
           width: 100,
           decoration: BoxDecoration(
             border: Border.all(color: color, width: 6),
-            color: Colors.white.withOpacity(0.18),
+            color: Colors.black.withOpacity(0.2),
             borderRadius: BorderRadius.circular(25),
           ),
           child: Column(
