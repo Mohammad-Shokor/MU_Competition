@@ -1,5 +1,6 @@
 import 'package:codit_competition/screens/LoadScreen.dart';
 import 'package:codit_competition/screens/competition_screen_mobile.dart';
+import 'package:codit_competition/screens/team1VSteam2Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -62,7 +63,7 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
       context,
       MaterialPageRoute(
         builder: (ctx) {
-          return Loadscreen(
+          return Team1vsteam2screen(
             competition: widget.competition,
             team1: team1,
             team2: team2,
