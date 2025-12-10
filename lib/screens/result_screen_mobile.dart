@@ -1,4 +1,4 @@
-import 'package:codit_competition/screens/start_screen.dart';
+import 'package:codit_competition/screens/mobile_start_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
 import 'package:lottie/lottie.dart';
@@ -58,7 +58,9 @@ class ResultsScreenMobile extends StatelessWidget {
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => StartScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => MobileStartScreen(),
+                        ),
                       );
                     },
                     child: Text(

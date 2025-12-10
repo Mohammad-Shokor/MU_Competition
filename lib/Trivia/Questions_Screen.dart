@@ -15,11 +15,13 @@ class QuestionsScreen extends StatefulWidget {
     required this.team1,
     required this.team2,
     required this.teams,
+    this.Draw = false,
   });
   final Club competitionType;
   final String team1;
   final String team2;
   final List<Team> teams;
+  final bool Draw;
   @override
   State<QuestionsScreen> createState() => _QuestionsScreenState();
 }
@@ -37,14 +39,13 @@ class _QuestionsScreenState extends State<QuestionsScreen>
   late String team2 = widget.team2;
   int team1Score = 0;
   int team2Score = 0;
-
   int _secondsRemaining = 15;
   Timer? _timer;
   int currentTeam = 1;
 
   // TEAM COLORS
-  Color team1Color = Colors.yellow;
-  Color team2Color = Colors.yellow;
+  Color team1Color = Colors.white.withOpacity(0.3);
+  Color team2Color = Colors.white.withOpacity(0.3);
   Color get ContainerColor {
     return DarkMode
         ? Colors.black.withOpacity(0.3)
@@ -63,18 +64,22 @@ class _QuestionsScreenState extends State<QuestionsScreen>
 
     // Set questions and answers based on competition type
     question =
-        widget.competitionType == Club.Code_it
+        widget.Draw
+            ? backupQuestions
+            : widget.competitionType == Club.Code_it
             ? csQuestions
             : widget.competitionType == Club.MUBC
             ? businessQuestions
-            : questions;
+            : generalQuestions;
 
     answers =
-        widget.competitionType == Club.Code_it
+        widget.Draw
+            ? backupAnswers
+            : widget.competitionType == Club.Code_it
             ? csAnswers
             : widget.competitionType == Club.MUBC
             ? businessAnswers
-            : ListOfAnswers;
+            : generalAnswers;
 
     // Shuffle questions
     shownQuestions = List.from(question);
@@ -104,6 +109,9 @@ class _QuestionsScreenState extends State<QuestionsScreen>
     setState(() {
       selectedAnswer = null;
       buttonsEnabled = false;
+
+      team1Color = Colors.white.withOpacity(0.3);
+      team2Color = Colors.white.withOpacity(0.3);
     });
     Future.delayed(const Duration(seconds: 3), () {
       if (!mounted) return;
@@ -128,9 +136,9 @@ class _QuestionsScreenState extends State<QuestionsScreen>
 
         // Reset team color to yellow after timeout
         if (currentTeam == 1) {
-          team1Color = Colors.yellow;
+          team1Color = Colors.white.withOpacity(0.3);
         } else {
-          team2Color = Colors.yellow;
+          team2Color = Colors.white.withOpacity(0.3);
         }
 
         setState(() {
@@ -272,11 +280,10 @@ class _QuestionsScreenState extends State<QuestionsScreen>
 
     bool isTeam1 = teamSelected == widget.team1;
     bool isCorrect = answer == answers[index][0];
-
     setState(() {
-      selectedAnswer = answer;
+      selectedAnswer = answer; // Keep this set to show color
+      buttonsEnabled = false;
       if (isCorrect) {
-        // correct: increment score
         if (isTeam1) {
           team1Score++;
           team1Color = Colors.green;
@@ -284,8 +291,10 @@ class _QuestionsScreenState extends State<QuestionsScreen>
           team2Score++;
           team2Color = Colors.green;
         }
+        if (widget.Draw) {
+          navigateToResults();
+        }
       } else {
-        // wrong: show red
         if (isTeam1) {
           team1Color = Colors.red;
         } else {
@@ -297,12 +306,12 @@ class _QuestionsScreenState extends State<QuestionsScreen>
     await Future.delayed(const Duration(seconds: 2));
 
     if (isCorrect || lastTeamAttempted != null) {
-      // either correct answer or second team already tried => next question
+      // Move to next question
       index++;
       lastTeamAttempted = null;
       team1Color = Colors.yellow;
       team2Color = Colors.yellow;
-      selectedAnswer = null;
+      // DON'T reset selectedAnswer here - let loadNextQuestion do it
 
       if (index >= question.length) {
         navigateToResults();
@@ -312,12 +321,12 @@ class _QuestionsScreenState extends State<QuestionsScreen>
       loadNextQuestion();
       startTimer(reset: true);
     } else {
-      // first team wrong, let other team try
+      // First team wrong, let other team try
       lastTeamAttempted = teamSelected;
-      team1Color = Colors.yellow;
-      team2Color = Colors.yellow;
-      selectedAnswer = null;
-      buttonsEnabled = true;
+      // DON'T reset selectedAnswer here either
+      setState(() {
+        buttonsEnabled = true;
+      });
       startTimer();
     }
   }
@@ -529,7 +538,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                             ),
                             child: Row(
                               children: [
-                                buildScoreCard(team1, team1Score, width),
+                                buildScoreCard(team1, team1Score, width, 1),
 
                                 const Spacer(),
 
@@ -567,14 +576,14 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                                 ),
 
                                 const Spacer(),
-                                buildScoreCard(team2, team2Score, width),
+                                buildScoreCard(team2, team2Score, width, 2),
                               ],
                             ),
                           ),
                         )
                         : Row(
                           children: [
-                            buildScoreCard(team1, team1Score, width),
+                            buildScoreCard(team1, team1Score, width, 1),
 
                             const Spacer(),
 
@@ -601,7 +610,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
 
                             const Spacer(),
 
-                            buildScoreCard(team2, team2Score, width),
+                            buildScoreCard(team2, team2Score, width, 2),
                           ],
                         ),
                     SizedBox(height: height * 0.05),
@@ -636,7 +645,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
   // ----------------------------------------------------------
   // HELPERS
   // ----------------------------------------------------------
-  Widget buildScoreCard(String team, int score, double width) {
+  Widget buildScoreCard(String team, int score, double width, int number) {
     return width > 700
         ? Expanded(
           child: Container(
@@ -644,7 +653,7 @@ class _QuestionsScreenState extends State<QuestionsScreen>
               color: ContainerColor,
               borderRadius: BorderRadius.circular(25),
               border: Border.all(
-                color: Colors.white.withOpacity(0.3),
+                color: number == 1 ? team1Color : team2Color,
                 width: 10,
               ),
             ),
@@ -664,14 +673,14 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                     ),
                   ),
                 ),
-                const SizedBox(height: 5),
+                Divider(),
                 Text(
                   "$score",
                   textAlign: TextAlign.center,
                   style: GoogleFonts.aBeeZee(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 80,
+                    fontSize: 75,
                   ),
                 ),
               ],

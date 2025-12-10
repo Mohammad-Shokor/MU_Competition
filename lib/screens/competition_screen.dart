@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:codit_competition/screens/results_screen.dart';
-import 'package:codit_competition/screens/start_screen.dart';
+import 'package:codit_competition/screens/mobile_start_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -64,14 +64,14 @@ class _CompetitionScreenState extends State<CompetitionScreen>
             ? csQuestions
             : widget.competitionType == "Business Club"
             ? businessQuestions
-            : questions;
+            : generalQuestions;
 
     answers =
         widget.competitionType == "Code it"
             ? csAnswers
             : widget.competitionType == "Business Club"
             ? businessAnswers
-            : ListOfAnswers;
+            : generalAnswers;
 
     // Shuffle questions
     shownQuestions = List.from(question);
@@ -591,7 +591,9 @@ class _CompetitionScreenState extends State<CompetitionScreen>
                   onPressed: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => StartScreen()),
+                      MaterialPageRoute(
+                        builder: (context) => MobileStartScreen(),
+                      ),
                     );
                   },
                   icon: const Icon(Icons.arrow_back, color: Colors.white),

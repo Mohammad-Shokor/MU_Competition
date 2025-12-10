@@ -140,14 +140,14 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
               height: height - width * 0.1,
               width: 1160,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
                 spacing: 100,
                 children: [
                   // Winner
                   teamContainer(6, width, winner!, 2),
-                  // Finalists row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       teamContainer(4, width, finalists[0], 1),
                       SizedBox(width: 330),
@@ -155,16 +155,22 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
                       teamContainer(5, width, finalists[1], 1),
                     ],
                   ),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       ...teams.map((team) {
                         int idx = teams.indexOf(team);
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                        return SizedBox(
+                          width:
+                              250 +
+                              40, // teamContainer width + horizontal padding
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment:
+                                CrossAxisAlignment
+                                    .center, // <-- centers the container
                             children: [teamContainer(idx, width, team, 0)],
                           ),
                         );
@@ -243,6 +249,7 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
           BoxShadow(
             color: Colors.black.withOpacity(containerOpacity / 2 + 0.2),
             blurRadius: 6,
+
             offset: const Offset(0, 3),
           ),
         ],
@@ -256,7 +263,7 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
           ],
           stops: [0.0, 0.6, 1.0],
         ),
-        border: Border.all(color: Colors.white24, width: 1),
+        border: Border.all(color: Colors.white24, width: 3),
       ),
       width: 250,
       height: 120,

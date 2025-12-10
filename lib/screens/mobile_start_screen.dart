@@ -4,14 +4,14 @@ import 'package:lottie/lottie.dart';
 
 import 'InitialiseUsers.dart';
 
-class StartScreen extends StatefulWidget {
-  const StartScreen({super.key});
+class MobileStartScreen extends StatefulWidget {
+  const MobileStartScreen({super.key});
 
   @override
-  State<StartScreen> createState() => _StartScreenState();
+  State<MobileStartScreen> createState() => _MobileStartScreenState();
 }
 
-class _StartScreenState extends State<StartScreen>
+class _MobileStartScreenState extends State<MobileStartScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Color?> _colorAnimation1;

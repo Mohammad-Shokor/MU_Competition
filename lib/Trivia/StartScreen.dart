@@ -1,5 +1,6 @@
 import 'package:codit_competition/Trivia/LeaderBoardScreen.dart';
 import 'package:codit_competition/Trivia/teams.dart';
+import 'package:codit_competition/screens/mobile_start_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -51,98 +52,100 @@ class _StartScreenState extends State<StartScreen>
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Scaffold(
-          body: Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [_colorAnimation1.value!, _colorAnimation2.value!],
+    return width > 700
+        ? MobileStartScreen()
+        : AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return Scaffold(
+              body: Container(
+                width: double.infinity,
+                height: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [_colorAnimation1.value!, _colorAnimation2.value!],
+                  ),
+                ),
+                child: child,
               ),
-            ),
-            child: child,
-          ),
-          backgroundColor: Colors.transparent,
-        );
-      },
-      child: Center(
-        child: SizedBox(
-          width: width * 0.9,
-          height: height - width * 0.05,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            // spacing: 20,
-            children: [
-              Row(
+              backgroundColor: Colors.transparent,
+            );
+          },
+          child: Center(
+            child: SizedBox(
+              width: width * 0.9,
+              height: height - width * 0.05,
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                // spacing: 20,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(75),
-                      border: Border.all(color: Colors.black, width: 2),
-                    ),
-                    child: CircleAvatar(
-                      radius: 75,
-                      child: ClipOval(
-                        child: Image.asset(
-                          "assets/CodeIt.jpg",
-                          fit: BoxFit.cover,
-                          width: 150,
-                          height: 150,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(75),
+                          border: Border.all(color: Colors.black, width: 2),
+                        ),
+                        child: CircleAvatar(
+                          radius: 75,
+                          child: ClipOval(
+                            child: Image.asset(
+                              "assets/CodeIt.jpg",
+                              fit: BoxFit.cover,
+                              width: 150,
+                              height: 150,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
 
-                  Spacer(),
+                      Spacer(),
 
-                  Text(
-                    "Trivia Start Screen",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.aBeeZee(
-                      fontSize: width > 700 ? 70 : 35,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Spacer(),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(75),
-                      border: Border.all(color: Colors.black, width: 2),
-                    ),
-                    child: CircleAvatar(
-                      radius: 75,
-                      child: ClipOval(
-                        child: Image.asset(
-                          "assets/MUBC.jpg",
-                          fit: BoxFit.cover,
-                          width: 150,
-                          height: 150,
+                      Text(
+                        "Trivia Start Screen",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.aBeeZee(
+                          fontSize: width > 700 ? 70 : 35,
+                          color: Colors.white,
                         ),
                       ),
+                      Spacer(),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(75),
+                          border: Border.all(color: Colors.black, width: 2),
+                        ),
+                        child: CircleAvatar(
+                          radius: 75,
+                          child: ClipOval(
+                            child: Image.asset(
+                              "assets/MUBC.jpg",
+                              fit: BoxFit.cover,
+                              width: 150,
+                              height: 150,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: width > 700 ? height * 0.2 : height * 0.1),
+                  SizedBox(
+                    width: 1000,
+                    child: StartTrivia(
+                      context,
+                      Leaderboardscreen(teams: teams),
+                      width,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: width > 700 ? height * 0.2 : height * 0.1),
-              SizedBox(
-                width: 1000,
-                child: StartTrivia(
-                  context,
-                  Leaderboardscreen(teams: teams),
-                  width,
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+        );
   }
 
   Column StartTrivia(BuildContext context, Widget target, double width) {

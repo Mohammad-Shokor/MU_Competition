@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
+import 'Questions_Screen.dart';
+
 class Onevoneresults extends StatefulWidget {
   const Onevoneresults({
     super.key,
@@ -82,12 +84,28 @@ class _OnevoneresultsState extends State<Onevoneresults> {
 
     // Navigate safely
     if (!mounted) return;
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Leaderboardscreen(teams: updatedTeams),
-      ),
-    );
+    if (widget.team1Score == widget.team2Score) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) => QuestionsScreen(
+                competitionType: widget.competition,
+                team1: widget.team1,
+                team2: widget.team2,
+                teams: widget.teams,
+                Draw: true,
+              ),
+        ),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Leaderboardscreen(teams: updatedTeams),
+        ),
+      );
+    }
   }
 
   @override
