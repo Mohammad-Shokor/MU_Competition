@@ -1,4 +1,5 @@
 import 'package:codit_competition/Trivia/LeaderBoardScreen.dart';
+import 'package:codit_competition/Trivia/teams.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -14,7 +15,27 @@ class _StartScreenState extends State<StartScreen>
   late AnimationController _controller;
   late Animation<Color?> _colorAnimation1;
   late Animation<Color?> _colorAnimation2;
-
+  List<Team> teams = [
+    Team(
+      ["Ali", "Mohammad", "Jawad", "Mohsen"],
+      "Binary Nerds",
+      Club.Code_it,
+      0,
+    ),
+    Team(
+      ["Hadi", "Mahdi", "Rami", "Youssef"],
+      "Algorithm Avengers",
+      Club.Code_it,
+      0,
+    ),
+    Team(["Sara", "Lama", "Nour", "Rita"], "Market Mavericks", Club.MUBC, 0),
+    Team(
+      ["Omar", "Hussein", "Fadi", "Karim"],
+      "Business Innovators",
+      Club.MUBC,
+      0,
+    ),
+  ];
   @override
   void initState() {
     super.initState();
@@ -126,7 +147,11 @@ class _StartScreenState extends State<StartScreen>
               SizedBox(height: width > 700 ? height * 0.2 : height * 0.1),
               SizedBox(
                 width: 1000,
-                child: StartTrivia(context, Leaderboardscreen(), width),
+                child: StartTrivia(
+                  context,
+                  Leaderboardscreen(teams: teams),
+                  width,
+                ),
               ),
             ],
           ),

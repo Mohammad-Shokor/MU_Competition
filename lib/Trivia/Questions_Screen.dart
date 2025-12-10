@@ -1,12 +1,12 @@
 import 'dart:async';
+import 'package:codit_competition/Trivia/oneVOneResults.dart';
 import 'package:codit_competition/Trivia/teams.dart';
-import 'package:codit_competition/screens/results_screen.dart';
-import 'package:codit_competition/screens/start_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 import '../questions.dart';
+import 'StartScreen.dart';
 
 class QuestionsScreen extends StatefulWidget {
   const QuestionsScreen({
@@ -144,11 +144,13 @@ class _QuestionsScreenState extends State<QuestionsScreen>
             context,
             MaterialPageRoute(
               builder:
-                  (context) => ResultsScreen(
-                    team1Name: team1,
-                    team2Name: team2,
+                  (context) => Onevoneresults(
+                    team1: team1,
+                    competition: widget.competitionType,
+                    team2: team2,
                     team1Score: team1Score,
                     team2Score: team2Score,
+                    teams: widget.teams,
                   ),
             ),
           );
@@ -201,11 +203,13 @@ class _QuestionsScreenState extends State<QuestionsScreen>
           context,
           MaterialPageRoute(
             builder:
-                (context) => ResultsScreen(
-                  team1Name: team1,
-                  team2Name: team2,
+                (context) => Onevoneresults(
+                  team1: team1,
+                  competition: widget.competitionType,
+                  team2: team2,
                   team1Score: team1Score,
                   team2Score: team2Score,
+                  teams: widget.teams,
                 ),
           ),
         );
@@ -238,11 +242,13 @@ class _QuestionsScreenState extends State<QuestionsScreen>
         context,
         MaterialPageRoute(
           builder:
-              (context) => ResultsScreen(
-                team1Name: team1,
-                team2Name: team2,
+              (context) => Onevoneresults(
+                team1: team1,
+                competition: widget.competitionType,
+                team2: team2,
                 team1Score: team1Score,
                 team2Score: team2Score,
+                teams: widget.teams,
               ),
         ),
       );

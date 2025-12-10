@@ -1,14 +1,13 @@
 import 'package:codit_competition/Trivia/OneVOne.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-
-import 'angledArrow.dart';
+import 'StartScreen.dart';
 import 'multiAngledArrow.dart';
 import 'teams.dart';
 
 class Leaderboardscreen extends StatefulWidget {
-  const Leaderboardscreen({super.key});
-
+  const Leaderboardscreen({super.key, required this.teams});
+  final List<Team> teams;
   @override
   State<Leaderboardscreen> createState() => _LeaderboardscreenState();
 }
@@ -16,33 +15,11 @@ class Leaderboardscreen extends StatefulWidget {
 class _LeaderboardscreenState extends State<Leaderboardscreen> {
   // Teams list
   int round = 0;
-  List<Team> teams = [
-    Team(
-      ["Ali", "Mohammad", "Jawad", "Mohsen"],
-      "Binary Nerds",
-      Club.Code_it,
-      0,
-    ),
-    Team(
-      ["Hadi", "Mahdi", "Rami", "Youssef"],
-      "Algorithm Avengers",
-      Club.Code_it,
-      0,
-    ),
-    Team(["Sara", "Lama", "Nour", "Rita"], "Market Mavericks", Club.MUBC, 0),
-    Team(
-      ["Omar", "Hussein", "Fadi", "Karim"],
-      "Business Innovators",
-      Club.MUBC,
-      0,
-    ),
-  ];
+  late List<Team> teams;
 
-  late List<Team> finalists = [
-    Team([], "", Club.Code_it, 0),
-    Team([], "", Club.Code_it, 0),
-  ]; // Level 1
-  Team? winner; // Level 2
+  late List<Team> finalists;
+  Team? winner;
+  // Level 2
 
   late List<GlobalKey> keys; // keys for measuring widgets
   List<Offset> start = [];
@@ -52,48 +29,58 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < 4; i++) {
-      round += teams[i].Level;
+
+    // always clone incoming teams to avoid mutation bugs
+    teams = widget.teams.map((t) => t.copy()).toList();
+
+    // calculate round
+    round = teams.fold(0, (sum, t) => sum + t.Level);
+
+    // pick finalists
+    finalists = teams.where((t) => t.Level >= 1).toList();
+
+    // ensure 2 finalists (fallback is invisible dummy)
+    if (finalists.length < 2) {
+      finalists.addAll(
+        List.generate(
+          2 - finalists.length,
+          (_) => Team([], "", Club.Code_it, -1),
+        ),
+      );
     }
-    // Filter finalists (Level == 1)
-    var temp = teams.where((team) => team.Level >= 1).toList();
-    for (int i = 0; i < temp.length; i++) {
-      finalists[i] = temp[i];
-    }
-    // Get winner (Level == 2), fallback to first team
+
+    // pick winner
     winner = teams.firstWhere(
-      (team) => team.Level == 2,
-      orElse: () => Team([], "", Club.Code_it, 0),
+      (t) => t.Level == 2,
+      orElse: () => Team([], "", Club.Code_it, -1),
     );
-    // Create 7 keys: 4 teams + 2 finalists + 1 winner
+
+    // 4 teams + 2 finalists + 1 winner
     keys = List.generate(7, (_) => GlobalKey());
 
-    // Wait for layout to get positions
     WidgetsBinding.instance.addPostFrameCallback((_) {
       start.clear();
       end.clear();
 
-      // Start points (top center of all team widgets)
       for (int i = 0; i < 6; i++) {
         start.add(getCenterTop(keys[i]));
       }
 
-      // End points
-      for (int i = 0; i < 2; i++)
-        end.add(getCenterBottom(keys[4])); // finalist 1
-      for (int i = 2; i < 4; i++)
-        end.add(getCenterBottom(keys[5])); // finalist 2
-      for (int i = 4; i < 6; i++) end.add(getCenterBottom(keys[6])); // winner
+      end = [
+        getCenterBottom(keys[4]),
+        getCenterBottom(keys[4]),
+        getCenterBottom(keys[5]),
+        getCenterBottom(keys[5]),
+        getCenterBottom(keys[6]),
+        getCenterBottom(keys[6]),
+      ];
 
       for (int i = 0; i < 4; i++) {
-        if (teams[i].Level >= 1) {
-          visibleArrows[i] = true;
-        }
+        if (teams[i].Level >= 1) visibleArrows[i] = true;
       }
-      for (int i = 0; i < finalists.length; i++) {
-        if (finalists[i].Level == 2) {
-          visibleArrows[i + 4] = true;
-        }
+
+      for (int i = 0; i < 2; i++) {
+        if (finalists[i].Level == 2) visibleArrows[i + 4] = true;
       }
     });
   }
@@ -164,31 +151,7 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
                     children: [
                       teamContainer(4, width, finalists[0], 1),
                       SizedBox(width: 330),
-                      StartTrivia(
-                        context,
-                        OneVOne(
-                          competition:
-                              round == 0
-                                  ? Club.Code_it
-                                  : round == 1
-                                  ? Club.MUBC
-                                  : Club.Mix,
-                          team1:
-                              round == 0
-                                  ? teams[0].TeamName
-                                  : round == 1
-                                  ? teams[2].TeamName
-                                  : finalists[0].TeamName,
-                          team2:
-                              round == 0
-                                  ? teams[1].TeamName
-                                  : round == 1
-                                  ? teams[3].TeamName
-                                  : finalists[1].TeamName,
-                          teams: teams,
-                        ),
-                        width,
-                      ),
+
                       teamContainer(5, width, finalists[1], 1),
                     ],
                   ),
@@ -217,6 +180,35 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
           CustomPaint(
             painter: MultiAngledArrowPainter(start, end, visibleArrows),
             size: Size(width, height),
+          ),
+          Center(
+            child: StartTrivia(
+              context,
+              round > 2
+                  ? StartScreen()
+                  : OneVOne(
+                    competition:
+                        round == 0
+                            ? Club.Code_it
+                            : round == 1
+                            ? Club.MUBC
+                            : Club.Mix,
+                    team1:
+                        round == 0
+                            ? teams[0].TeamName
+                            : round == 1
+                            ? teams[2].TeamName
+                            : finalists[0].TeamName,
+                    team2:
+                        round == 0
+                            ? teams[1].TeamName
+                            : round == 1
+                            ? teams[3].TeamName
+                            : finalists[1].TeamName,
+                    teams: teams,
+                  ),
+              width,
+            ),
           ),
         ],
       ),
@@ -294,8 +286,8 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
             borderRadius: BorderRadius.circular(width > 700 ? 150 : 60),
             border: Border.all(color: Colors.white, width: 5),
           ),
-          width: width > 700 ? 300 : 150,
-          height: width > 700 ? 300 : 150,
+          width: 100,
+          height: 100,
           child: IconButton(
             onPressed: () {
               Navigator.push(
@@ -307,7 +299,7 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
                 ),
               );
             },
-            icon: Icon(Icons.play_arrow, size: 200, color: Colors.white),
+            icon: Icon(Icons.play_arrow, size: 70, color: Colors.white),
           ),
         ),
       ],

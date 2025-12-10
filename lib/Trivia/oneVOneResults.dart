@@ -1,61 +1,93 @@
 import 'dart:async';
-import 'package:codit_competition/Trivia/Questions_Screen.dart';
+import 'dart:developer';
+import 'package:codit_competition/Trivia/LeaderBoardScreen.dart';
 import 'package:codit_competition/Trivia/teams.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
-class OneVOne extends StatefulWidget {
-  const OneVOne({
+class Onevoneresults extends StatefulWidget {
+  const Onevoneresults({
     super.key,
     required this.competition,
     required this.team1,
     required this.team2,
     required this.teams,
+    required this.team1Score,
+    required this.team2Score,
   });
+
   final Club competition;
   final String team1;
   final String team2;
+  final int team1Score;
+  final int team2Score;
   final List<Team> teams;
+
   @override
-  State<OneVOne> createState() => _OneVOneState();
+  State<Onevoneresults> createState() => _OnevoneresultsState();
 }
 
-class _OneVOneState extends State<OneVOne> {
-  int _counter = 3;
+class _OnevoneresultsState extends State<Onevoneresults> {
+  int _counter = 2;
   Timer? _timer;
-  late Club comp;
-  bool DarkMode = true;
+  late List<Team> teams;
+  bool darkMode = true;
+
   @override
   void initState() {
     super.initState();
+    teams = widget.teams;
     _startTimer();
-    comp = widget.competition;
   }
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_counter == 0) {
         _timer?.cancel();
-        // Navigate to another screen
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) => QuestionsScreen(
-                  competitionType: comp,
-                  team1: widget.team1,
-                  team2: widget.team2,
-                  teams: widget.teams,
-                ),
-          ),
-        );
+
+        // Determine the winner
+        String winnerTeam =
+            widget.team1Score >= widget.team2Score
+                ? widget.team1
+                : widget.team2;
+        int newLevel = widget.competition == Club.Mix ? 2 : 1;
+
+        _updateTeamLevel(winnerTeam, newLevel);
       } else {
         setState(() {
           _counter--;
         });
       }
     });
+  }
+
+  void _updateTeamLevel(String teamName, int newLevel) {
+    final updatedTeams =
+        teams.map((team) {
+          if (team.TeamName == teamName) {
+            return Team(
+              List<String>.from(team.Members),
+              team.TeamName,
+              team.club,
+              newLevel,
+            );
+          }
+          return team.copy();
+        }).toList();
+
+    // Logging for debug
+    String debugData = updatedTeams.map((t) => t.GetData()).join();
+    log(debugData);
+
+    // Navigate safely
+    if (!mounted) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Leaderboardscreen(teams: updatedTeams),
+      ),
+    );
   }
 
   @override
@@ -68,34 +100,36 @@ class _OneVOneState extends State<OneVOne> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Stack(
         children: [
+          // Background animation
           Lottie.asset(
             "assets/Background.json",
             width: width,
             height: height,
             fit: BoxFit.cover,
           ),
+
+          // Countdown timer
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: height * 0.2),
                 Container(
                   decoration: BoxDecoration(
                     color:
-                        DarkMode
+                        darkMode
                             ? Colors.black.withOpacity(0.4)
                             : Colors.white.withOpacity(0.18),
                     borderRadius: BorderRadius.circular(100),
                     border: Border.all(
                       color: Colors.white.withOpacity(0.3),
-                      width: DarkMode ? 3 : 0,
+                      width: darkMode ? 3 : 0,
                     ),
                   ),
-
                   child: SizedBox(
                     width: width > 700 ? 130 : 100,
                     height: width > 700 ? 130 : 100,
@@ -114,6 +148,8 @@ class _OneVOneState extends State<OneVOne> {
               ],
             ),
           ),
+
+          // Score display
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -124,18 +160,27 @@ class _OneVOneState extends State<OneVOne> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(child: TeamsContainer(width, widget.team1)),
-                      SizedBox(width: 150),
+                      TeamsContainer(width, widget.team1),
+                      SizedBox(width: 30),
                       Text(
-                        "VS",
+                        "${widget.team1Score}",
                         style: GoogleFonts.aBeeZee(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: width > 700 ? 110 : 90,
                         ),
                       ),
-                      SizedBox(width: 150),
-                      Expanded(child: TeamsContainer(width, widget.team2)),
+                      SizedBox(width: 30),
+                      Text(
+                        "${widget.team2Score}",
+                        style: GoogleFonts.aBeeZee(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: width > 700 ? 110 : 90,
+                        ),
+                      ),
+                      SizedBox(width: 30),
+                      TeamsContainer(width, widget.team2),
                     ],
                   ),
                 ),
@@ -151,15 +196,9 @@ class _OneVOneState extends State<OneVOne> {
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color:
-            DarkMode
-                ? Colors.black.withOpacity(0.3)
-                : Colors.white.withOpacity(0.18),
+        color: Colors.black.withOpacity(0.3),
         borderRadius: BorderRadius.circular(50),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.3),
-          width: DarkMode ? 3 : 0,
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.3), width: 3),
       ),
       child: SizedBox(
         width: width > 700 ? 200 : 125,
