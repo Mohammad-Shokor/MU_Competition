@@ -91,7 +91,7 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
       buttonsEnabled = false;
     });
 
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 1), () {
       if (!mounted) return;
       setState(() {
         buttonsEnabled = true;
@@ -355,7 +355,7 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
                                       textAlign: TextAlign.center,
                                       style: GoogleFonts.aBeeZee(
                                         fontWeight: FontWeight.w500,
-                                        fontSize: 18,
+                                        fontSize: 21,
                                       ),
                                     ),
                                   ),

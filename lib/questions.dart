@@ -1,10 +1,10 @@
 List<String> generalQuestions = [
   "What is the difference between data and information?",
-  // "Who was the first Lebanese president?",
-  // "What is the capital of Ethiopia?",
-  // "Which country currently has the highest inflation rate in the world?",
-  // "What is the largest company in the world by market capitalization?",
-  // "Data stored on a blockchain can be edited or deleted once recorded?",
+  "Who was the first Lebanese president?",
+  "What is the capital of Ethiopia?",
+  "Which country currently has the highest inflation rate in the world?",
+  "What is the largest company in the world by market capitalization?",
+  "Data stored on a blockchain can be edited or deleted once recorded?",
 ];
 
 List<List<String>> generalAnswers = [
@@ -14,16 +14,16 @@ List<List<String>> generalAnswers = [
     "Data is optional, information is mandatory",
     "Data is digital, information is physical",
   ],
-  // ["Bshara L Khory", "Emil La7ood", "Kamel Sham3oon", "Fo2ad Shhab"],
-  // ["Addis Ababa", "Asmara", "Kampala", "Kigali"],
-  // ["Venezuela", "Argentina", "Sudan", "Turkey"],
-  // ["Apple", "Amazon", "Microsoft", "Saudi Aramco"],
-  // [
-  //   "False",
-  //   "True",
-  //   "It depends on the miner",
-  //   "Only administrators can edit it",
-  // ],
+  ["Bshara L Khory", "Emil La7ood", "Kamel Sham3oon", "Fo2ad Shhab"],
+  ["Addis Ababa", "Asmara", "Kampala", "Kigali"],
+  ["Venezuela", "Argentina", "Sudan", "Turkey"],
+  ["Apple", "Amazon", "Microsoft", "Saudi Aramco"],
+  [
+    "False",
+    "True",
+    "It depends on the miner",
+    "Only administrators can edit it",
+  ],
 ];
 List<String> backupQuestions = [
   "Which university was originally known as the Syrian Protestant College?",
