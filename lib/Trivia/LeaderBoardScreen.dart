@@ -1,3 +1,4 @@
+import 'package:codit_competition/Trivia/OneVOne.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -14,6 +15,7 @@ class Leaderboardscreen extends StatefulWidget {
 
 class _LeaderboardscreenState extends State<Leaderboardscreen> {
   // Teams list
+  int round = 0;
   List<Team> teams = [
     Team(
       ["Ali", "Mohammad", "Jawad", "Mohsen"],
@@ -50,7 +52,9 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
   @override
   void initState() {
     super.initState();
-
+    for (int i = 0; i < 4; i++) {
+      round += teams[i].Level;
+    }
     // Filter finalists (Level == 1)
     var temp = teams.where((team) => team.Level >= 1).toList();
     for (int i = 0; i < temp.length; i++) {
@@ -146,33 +150,46 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
           // Finalists row
           Center(
             child: SizedBox(
-              height: height - width * 0.075,
+              height: height - width * 0.1,
               width: 1160,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
-                spacing: 50,
+                spacing: 100,
                 children: [
                   // Winner
-                  teamContainer(6, width, winner!, 2, true),
+                  teamContainer(6, width, winner!, 2),
                   // Finalists row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      teamContainer(
-                        4,
-                        width,
-                        finalists[0],
-                        1,
-                        finalists[0].Level >= 1,
-                      ),
+                      teamContainer(4, width, finalists[0], 1),
                       SizedBox(width: 330),
-                      teamContainer(
-                        5,
+                      StartTrivia(
+                        context,
+                        OneVOne(
+                          competition:
+                              round == 0
+                                  ? Club.Code_it
+                                  : round == 1
+                                  ? Club.MUBC
+                                  : Club.Mix,
+                          team1:
+                              round == 0
+                                  ? teams[0].TeamName
+                                  : round == 1
+                                  ? teams[2].TeamName
+                                  : finalists[0].TeamName,
+                          team2:
+                              round == 0
+                                  ? teams[1].TeamName
+                                  : round == 1
+                                  ? teams[3].TeamName
+                                  : finalists[1].TeamName,
+                          teams: teams,
+                        ),
                         width,
-                        finalists[1],
-                        1,
-                        finalists[0].Level >= 1,
                       ),
+                      teamContainer(5, width, finalists[1], 1),
                     ],
                   ),
                   Row(
@@ -185,9 +202,7 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              teamContainer(idx, width, team, 0, true),
-                            ],
+                            children: [teamContainer(idx, width, team, 0)],
                           ),
                         );
                       }),
@@ -208,19 +223,23 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
     );
   }
 
-  Container teamContainer(
-    int idx,
-    double width,
-    Team team,
-    int level,
-    bool check,
-  ) {
+  Container teamContainer(int idx, double width, Team team, int level) {
     // Determine opacity based on level match
-    final double baseOpacity = (team.Level == level) ? 0.7 : 0.2;
+    final double baseOpacity =
+        (team.Level == level)
+            ? 0.7
+            : team.Level > level
+            ? 0.2
+            : 0;
 
     // If check == true, make it mostly transparent
-    final double containerOpacity = check ? 0.05 : baseOpacity;
-    final double textOpacity = check ? 0.1 : (baseOpacity == 0.7 ? 1 : 0.3);
+    final double containerOpacity = baseOpacity;
+    final double textOpacity =
+        (team.Level == level)
+            ? 1
+            : team.Level > level
+            ? 0.3
+            : 0;
 
     return Container(
       key: keys[idx],
@@ -230,11 +249,21 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
         borderRadius: BorderRadius.circular(25),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withOpacity(containerOpacity / 2 + 0.2),
             blurRadius: 6,
             offset: const Offset(0, 3),
           ),
         ],
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.blueGrey.shade900.withOpacity(baseOpacity),
+            Colors.black.withOpacity(baseOpacity),
+            Colors.blueGrey.shade800.withOpacity(baseOpacity),
+          ],
+          stops: [0.0, 0.6, 1.0],
+        ),
         border: Border.all(color: Colors.white24, width: 1),
       ),
       width: 250,
@@ -253,6 +282,35 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Column StartTrivia(BuildContext context, Widget target, double width) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(width > 700 ? 150 : 60),
+            border: Border.all(color: Colors.white, width: 5),
+          ),
+          width: width > 700 ? 300 : 150,
+          height: width > 700 ? 300 : 150,
+          child: IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return target;
+                  },
+                ),
+              );
+            },
+            icon: Icon(Icons.play_arrow, size: 200, color: Colors.white),
+          ),
+        ),
+      ],
     );
   }
 }

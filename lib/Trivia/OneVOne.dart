@@ -1,5 +1,6 @@
 import 'dart:async';
-import 'package:codit_competition/screens/competition_screen.dart';
+import 'package:codit_competition/Trivia/Questions_Screen.dart';
+import 'package:codit_competition/Trivia/teams.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -10,10 +11,12 @@ class OneVOne extends StatefulWidget {
     required this.competition,
     required this.team1,
     required this.team2,
+    required this.teams,
   });
-  final String competition;
+  final Club competition;
   final String team1;
   final String team2;
+  final List<Team> teams;
   @override
   State<OneVOne> createState() => _OneVOneState();
 }
@@ -21,7 +24,7 @@ class OneVOne extends StatefulWidget {
 class _OneVOneState extends State<OneVOne> {
   int _counter = 10;
   Timer? _timer;
-  late String comp;
+  late Club comp;
   bool DarkMode = true;
   @override
   void initState() {
@@ -39,7 +42,7 @@ class _OneVOneState extends State<OneVOne> {
           context,
           MaterialPageRoute(
             builder:
-                (context) => CompetitionScreen(
+                (context) => QuestionsScreen(
                   competitionType: comp,
                   team1: widget.team1,
                   team2: widget.team2,

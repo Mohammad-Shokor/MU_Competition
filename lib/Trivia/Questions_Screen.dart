@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:codit_competition/Trivia/teams.dart';
 import 'package:codit_competition/screens/results_screen.dart';
 import 'package:codit_competition/screens/start_screen.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +14,12 @@ class QuestionsScreen extends StatefulWidget {
     required this.competitionType,
     required this.team1,
     required this.team2,
+    required this.teams,
   });
-  final String competitionType;
+  final Club competitionType;
   final String team1;
   final String team2;
+  final List<Team> teams;
   @override
   State<QuestionsScreen> createState() => _QuestionsScreenState();
 }
@@ -60,16 +63,16 @@ class _QuestionsScreenState extends State<QuestionsScreen>
 
     // Set questions and answers based on competition type
     question =
-        widget.competitionType == "Code it"
+        widget.competitionType == Club.Code_it
             ? csQuestions
-            : widget.competitionType == "Business Club"
+            : widget.competitionType == Club.MUBC
             ? businessQuestions
             : questions;
 
     answers =
-        widget.competitionType == "Code it"
+        widget.competitionType == Club.Code_it
             ? csAnswers
-            : widget.competitionType == "Business Club"
+            : widget.competitionType == Club.MUBC
             ? businessAnswers
             : ListOfAnswers;
 

@@ -126,7 +126,7 @@ class _StartScreenState extends State<StartScreen>
               SizedBox(height: width > 700 ? height * 0.2 : height * 0.1),
               SizedBox(
                 width: 1000,
-                child: teamButton(context, Leaderboardscreen(), width),
+                child: StartTrivia(context, Leaderboardscreen(), width),
               ),
             ],
           ),
@@ -135,10 +135,9 @@ class _StartScreenState extends State<StartScreen>
     );
   }
 
-  Column teamButton(BuildContext context, Widget target, double width) {
+  Column StartTrivia(BuildContext context, Widget target, double width) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      spacing: 10,
       children: [
         Container(
           decoration: BoxDecoration(

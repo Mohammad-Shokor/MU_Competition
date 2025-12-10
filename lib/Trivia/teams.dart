@@ -6,4 +6,4 @@ class Team {
   Team(this.TeamMemgers, this.TeamName, this.club, this.Level);
 }
 
-enum Club { MUBC, Code_it }
+enum Club { MUBC, Code_it, Mix }
