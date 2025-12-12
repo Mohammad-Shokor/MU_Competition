@@ -12,10 +12,12 @@ class OneVOne extends StatefulWidget {
     required this.team1,
     required this.team2,
     required this.teams,
+    this.demo = false,
   });
   final Club competition;
   final String team1;
   final String team2;
+  final bool demo;
   final List<Team> teams;
   @override
   State<OneVOne> createState() => _OneVOneState();

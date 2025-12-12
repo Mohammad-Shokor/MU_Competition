@@ -6,8 +6,9 @@ import 'multiAngledArrow.dart';
 import 'teams.dart';
 
 class Leaderboardscreen extends StatefulWidget {
-  const Leaderboardscreen({super.key, required this.teams});
+  const Leaderboardscreen({super.key, required this.teams, this.demo = false});
   final List<Team> teams;
+  final bool demo;
   @override
   State<Leaderboardscreen> createState() => _LeaderboardscreenState();
 }
@@ -217,6 +218,7 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
                             ? teams[3].TeamName
                             : finalists[1].TeamName,
                     teams: teams,
+                    demo: widget.demo,
                   ),
               width,
               round == 3,

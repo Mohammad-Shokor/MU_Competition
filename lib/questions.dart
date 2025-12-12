@@ -6,7 +6,10 @@ List<String> generalQuestions = [
   // "What is the largest company in the world by market capitalization?",
   // "Data stored on a blockchain can be edited or deleted once recorded?",
 ];
-
+List<String> DemoQuestions = ["What is one plus one"];
+List<List<String>> DemoAnswers = [
+  ["2", "3", "1", "IDK, I'll ask chatgpt"],
+];
 List<List<String>> generalAnswers = [
   [
     "Data is raw facts, information processes data",

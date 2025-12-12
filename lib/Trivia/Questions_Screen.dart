@@ -16,12 +16,14 @@ class QuestionsScreen extends StatefulWidget {
     required this.team2,
     required this.teams,
     this.Draw = false,
+    this.Demo = false,
   });
   final Club competitionType;
   final String team1;
   final String team2;
   final List<Team> teams;
   final bool Draw;
+  final bool Demo;
   @override
   State<QuestionsScreen> createState() => _QuestionsScreenState();
 }
@@ -64,7 +66,9 @@ class _QuestionsScreenState extends State<QuestionsScreen>
 
     // Set questions and answers based on competition type
     question =
-        widget.Draw
+        widget.Demo
+            ? DemoQuestions
+            : widget.Draw
             ? backupQuestions
             : widget.competitionType == Club.Code_it
             ? csQuestions
@@ -73,7 +77,9 @@ class _QuestionsScreenState extends State<QuestionsScreen>
             : generalQuestions;
 
     answers =
-        widget.Draw
+        widget.Demo
+            ? DemoAnswers
+            : widget.Draw
             ? backupAnswers
             : widget.competitionType == Club.Code_it
             ? csAnswers
