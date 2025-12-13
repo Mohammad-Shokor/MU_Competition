@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
-class TeamInputScreen extends StatefulWidget {
-  const TeamInputScreen({super.key});
+class TeamInputScreenWeb extends StatefulWidget {
+  const TeamInputScreenWeb({super.key});
   @override
-  State<TeamInputScreen> createState() => _TeamInputScreenState();
+  State<TeamInputScreenWeb> createState() => _TeamInputScreenStateWeb();
 }
 
-class _TeamInputScreenState extends State<TeamInputScreen> {
+class _TeamInputScreenStateWeb extends State<TeamInputScreenWeb> {
   final _UserNameController = TextEditingController();
   bool DarkMode = true;
   int size = 4;

@@ -365,16 +365,31 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
                           }).toList(),
                     ),
                   ),
-                  // SCORE + TIMER
                   Padding(
                     padding: const EdgeInsets.all(20),
-                    child: Container(
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.all(16),
+
                       width: width > 600 ? 0.11 * width : 90,
                       height: width > 600 ? 0.11 * width : 90,
+
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: timerColor,
+
                         borderRadius: BorderRadius.circular(50),
+                        boxShadow:
+                            timerColor != Colors.black.withOpacity(0.4)
+                                ? [
+                                  BoxShadow(
+                                    color: Colors.redAccent.withOpacity(0.6),
+                                    blurRadius: 12,
+                                    spreadRadius: 1,
+                                  ),
+                                ]
+                                : [],
                       ),
                       child: Text(
                         "$_secondsRemaining",

@@ -1,3 +1,4 @@
+import 'package:codit_competition/Trivia/CreateChallenge.dart';
 import 'package:codit_competition/Trivia/teams.dart';
 import 'package:codit_competition/screens/LoadScreen.dart';
 import 'package:flutter/material.dart';
@@ -123,7 +124,7 @@ class _StartscreenState extends State<Startscreen> {
             context,
             MaterialPageRoute(
               builder: (context) {
-                return TeamInputScreen();
+                return Createchallenge();
               },
             ),
           );
