@@ -1,7 +1,7 @@
 import 'package:codit_competition/Trivia/OneVOne.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'StartScreen.dart';
+import 'CompetitionStartScreen.dart';
 import 'multiAngledArrow.dart';
 import 'teams.dart';
 
@@ -191,7 +191,12 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
             child: StartTrivia(
               context,
               round > 2
-                  ? StartScreen()
+                  ? Competitionstartscreen(
+                    teamsName:
+                        teams.map((team) {
+                          return team.TeamName;
+                        }).toList(),
+                  )
                   : OneVOne(
                     competition:
                         round == 0
