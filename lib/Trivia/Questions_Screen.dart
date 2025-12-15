@@ -17,6 +17,8 @@ class QuestionsScreen extends StatefulWidget {
     required this.teams,
     this.Draw = false,
     this.Demo = false,
+    required this.questions,
+    required this.answers,
   });
   final Club competitionType;
   final String team1;
@@ -24,6 +26,8 @@ class QuestionsScreen extends StatefulWidget {
   final List<Team> teams;
   final bool Draw;
   final bool Demo;
+  final List<String> questions;
+  final List<List<String>> answers;
   @override
   State<QuestionsScreen> createState() => _QuestionsScreenState();
 }
@@ -66,7 +70,9 @@ class _QuestionsScreenState extends State<QuestionsScreen>
 
     // Set questions and answers based on competition type
     question =
-        widget.Demo
+        widget.competitionType == Club.Custom
+            ? widget.questions
+            : widget.Demo
             ? DemoQuestions
             : widget.Draw
             ? backupQuestions
@@ -77,7 +83,9 @@ class _QuestionsScreenState extends State<QuestionsScreen>
             : generalQuestions;
 
     answers =
-        widget.Demo
+        widget.competitionType == Club.Custom
+            ? widget.answers
+            : widget.Demo
             ? DemoAnswers
             : widget.Draw
             ? backupAnswers
@@ -175,6 +183,8 @@ class _QuestionsScreenState extends State<QuestionsScreen>
                     team1Score: team1Score,
                     team2Score: team2Score,
                     teams: widget.teams,
+                    questions: widget.questions,
+                    answers: widget.answers,
                   ),
             ),
           );
@@ -342,6 +352,8 @@ class _QuestionsScreenState extends State<QuestionsScreen>
               team1Score: team1Score,
               team2Score: team2Score,
               teams: widget.teams,
+              questions: widget.questions,
+              answers: widget.answers,
             ),
       ),
     );

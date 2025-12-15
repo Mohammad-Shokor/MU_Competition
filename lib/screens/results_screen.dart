@@ -1,6 +1,5 @@
 import 'dart:math';
-
-import 'package:codit_competition/screens/mobile_start_screen.dart';
+import 'package:codit_competition/screens/default_Competition_Start_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
 import 'package:lottie/lottie.dart';
@@ -71,7 +70,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                       "Congrats, ${widget.team1Score > widget.team2Score ? widget.team1Name : widget.team2Name} won \n with a score of ${max(widget.team1Score, widget.team2Score)}",
                       textAlign: TextAlign.center,
                       style: GoogleFonts.aBeeZee(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: width > 700 ? 80 : 40,
                       ),
@@ -80,7 +79,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                       "Congrats, it is a draw!!!",
                       textAlign: TextAlign.center,
                       style: GoogleFonts.aBeeZee(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: width > 700 ? 80 : 40,
                       ),
@@ -112,7 +111,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MobileStartScreen(),
+                          builder: (context) => DefaultCompetitionStartScreen(),
                         ),
                       );
                     },

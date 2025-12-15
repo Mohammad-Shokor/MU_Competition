@@ -1,4 +1,4 @@
-List<String> generalQuestions = [
+const List<String> generalQuestions = [
   "What is the difference between data and information?",
   "Who was the first Lebanese president?",
   "What is the capital of Ethiopia?",
@@ -10,7 +10,7 @@ List<String> DemoQuestions = ["What is one plus one"];
 List<List<String>> DemoAnswers = [
   ["2", "3", "1", "IDK, I'll ask chatgpt"],
 ];
-List<List<String>> generalAnswers = [
+const List<List<String>> generalAnswers = [
   [
     "Data is raw facts, information processes data",
     "Data is always text. Information is always numbers",

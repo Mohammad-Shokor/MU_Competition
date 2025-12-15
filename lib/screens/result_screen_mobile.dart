@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:codit_competition/screens/mobile_start_screen.dart';
+import 'package:codit_competition/screens/default_Competition_Start_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -210,7 +210,8 @@ class _ResultsScreenMobileState extends State<ResultsScreenMobile> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const MobileStartScreen(),
+                              builder:
+                                  (context) => DefaultCompetitionStartScreen(),
                             ),
                           );
                         },

@@ -1,4 +1,5 @@
 import 'package:codit_competition/Trivia/OneVOne.dart';
+import 'package:codit_competition/questions.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'CompetitionStartScreen.dart';
@@ -6,9 +7,17 @@ import 'multiAngledArrow.dart';
 import 'teams.dart';
 
 class Leaderboardscreen extends StatefulWidget {
-  const Leaderboardscreen({super.key, required this.teams, this.demo = false});
+  const Leaderboardscreen({
+    super.key,
+    required this.teams,
+    this.demo = false,
+    this.questions = generalQuestions,
+    this.answers = generalAnswers,
+  });
   final List<Team> teams;
   final bool demo;
+  final List<String> questions;
+  final List<List<String>> answers;
   @override
   State<Leaderboardscreen> createState() => _LeaderboardscreenState();
 }
@@ -199,6 +208,8 @@ class _LeaderboardscreenState extends State<Leaderboardscreen> {
                         }).toList(),
                   )
                   : OneVOne(
+                    questions: widget.questions,
+                    answers: widget.answers,
                     competition:
                         round == 0
                             ? Club.Code_it

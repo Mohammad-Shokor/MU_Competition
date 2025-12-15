@@ -1,4 +1,6 @@
 import 'package:codit_competition/Trivia/CompetitionStartScreen.dart';
+import 'package:codit_competition/Trivia/LeaderBoardScreen.dart';
+import 'package:codit_competition/Trivia/teams.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -45,7 +47,15 @@ class _TeamInputScreenStateWeb extends State<TeamInputScreenWeb> {
       context,
       MaterialPageRoute(
         builder: (ctx) {
-          return Competitionstartscreen(teamsName: teams);
+          return Leaderboardscreen(
+            teams: [
+              Team(["member 1", "member 2"], teams[0], Club.Code_it, 0),
+              Team(["member 1", "member 2"], teams[1], Club.Code_it, 0),
+              Team(["member 1", "member 2"], teams[2], Club.Code_it, 0),
+              Team(["member 1", "member 2"], teams[3], Club.Code_it, 0),
+            ],
+            demo: true,
+          );
         },
       ),
     );

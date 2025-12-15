@@ -22,4 +22,4 @@ class Team {
   }
 }
 
-enum Club { MUBC, Code_it, Mix }
+enum Club { MUBC, Code_it, Mix, Custom }

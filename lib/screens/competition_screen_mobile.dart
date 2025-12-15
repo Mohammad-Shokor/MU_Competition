@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:codit_competition/Trivia/teams.dart';
+import 'package:codit_competition/screens/default_Competition_Start_Screen.dart';
 import 'package:codit_competition/screens/result_screen_mobile.dart';
-import 'package:codit_competition/screens/mobile_start_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -14,10 +14,14 @@ class CompetitionScreenMobile extends StatefulWidget {
     required this.competitionType,
     required this.userName,
     this.Background = "assets/Background.json",
+    this.questions = generalQuestions,
+    this.answers = generalAnswers,
   });
   final Club competitionType;
   final String userName;
   final String Background;
+  final List<String> questions;
+  final List<List<String>> answers;
   @override
   State<CompetitionScreenMobile> createState() => _CompetitionScreenState();
 }
@@ -50,14 +54,18 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
 
     // Set questions and answers based on competition type
     question =
-        widget.competitionType == Club.Code_it
+        widget.competitionType == Club.Custom
+            ? widget.questions
+            : widget.competitionType == Club.Code_it
             ? csQuestions
             : widget.competitionType == Club.MUBC
             ? businessQuestions
             : generalQuestions;
 
     answers =
-        widget.competitionType == Club.Code_it
+        widget.competitionType == Club.Custom
+            ? widget.answers
+            : widget.competitionType == Club.Code_it
             ? csAnswers
             : widget.competitionType == Club.MUBC
             ? businessAnswers
@@ -423,7 +431,7 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MobileStartScreen(),
+                        builder: (context) => DefaultCompetitionStartScreen(),
                       ),
                     );
                   },

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:codit_competition/Trivia/Questions_Screen.dart';
 import 'package:codit_competition/Trivia/teams.dart';
+import 'package:codit_competition/questions.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -13,12 +14,16 @@ class OneVOne extends StatefulWidget {
     required this.team2,
     required this.teams,
     this.demo = false,
+    this.questions = generalQuestions,
+    this.answers = generalAnswers,
   });
   final Club competition;
   final String team1;
   final String team2;
   final bool demo;
   final List<Team> teams;
+  final List<String> questions;
+  final List<List<String>> answers;
   @override
   State<OneVOne> createState() => _OneVOneState();
 }
@@ -49,6 +54,8 @@ class _OneVOneState extends State<OneVOne> {
                   team1: widget.team1,
                   team2: widget.team2,
                   teams: widget.teams,
+                  questions: widget.questions,
+                  answers: widget.answers,
                 ),
           ),
         );

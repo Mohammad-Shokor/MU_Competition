@@ -17,6 +17,8 @@ class Onevoneresults extends StatefulWidget {
     required this.teams,
     required this.team1Score,
     required this.team2Score,
+    required this.questions,
+    required this.answers,
   });
 
   final Club competition;
@@ -25,7 +27,8 @@ class Onevoneresults extends StatefulWidget {
   final int team1Score;
   final int team2Score;
   final List<Team> teams;
-
+  final List<String> questions;
+  final List<List<String>> answers;
   @override
   State<Onevoneresults> createState() => _OnevoneresultsState();
 }
@@ -95,6 +98,8 @@ class _OnevoneresultsState extends State<Onevoneresults> {
                 team2: widget.team2,
                 teams: widget.teams,
                 Draw: true,
+                questions: widget.questions,
+                answers: widget.answers,
               ),
         ),
       );
@@ -102,7 +107,12 @@ class _OnevoneresultsState extends State<Onevoneresults> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Leaderboardscreen(teams: updatedTeams),
+          builder:
+              (context) => Leaderboardscreen(
+                teams: updatedTeams,
+                questions: widget.questions,
+                answers: widget.answers,
+              ),
         ),
       );
     }

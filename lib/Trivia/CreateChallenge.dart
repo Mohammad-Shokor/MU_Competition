@@ -1,3 +1,4 @@
+import 'package:codit_competition/Trivia/CreateQuestions.dart';
 import 'package:codit_competition/Trivia/InitialiseUsers.dart';
 import 'package:codit_competition/Trivia/teams.dart';
 import 'package:codit_competition/screens/InitialiseUsers.dart';
@@ -83,13 +84,14 @@ class _CreatechallengeState extends State<Createchallenge> {
       context,
       MaterialPageRoute(
         builder: (ctx) {
-          return size < 4
-              ? TeamInputScreen(
-                competition: Club.Code_it,
-                size: size,
-                Background: ChosenBackground,
-              )
-              : TeamInputScreenWeb(size: size);
+          return QuestionSourceScreen(size: size, Background: ChosenBackground);
+          //  size < 4
+          // ? TeamInputScreen(
+          //   competition: Club.Code_it,
+          //   size: size,
+          //   Background: ChosenBackground,
+          // )
+          //     : TeamInputScreenWeb(size: size);
         },
       ),
     );

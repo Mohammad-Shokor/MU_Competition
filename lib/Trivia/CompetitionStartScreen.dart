@@ -1,6 +1,6 @@
 import 'package:codit_competition/Trivia/LeaderBoardScreen.dart';
 import 'package:codit_competition/Trivia/teams.dart';
-import 'package:codit_competition/screens/mobile_start_screen.dart';
+import 'package:codit_competition/screens/default_Competition_Start_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -57,7 +57,7 @@ class _CompetitionstartscreenState extends State<Competitionstartscreen>
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return width < 700
-        ? MobileStartScreen()
+        ? DefaultCompetitionStartScreen()
         : AnimatedBuilder(
           animation: _controller,
           builder: (context, child) {

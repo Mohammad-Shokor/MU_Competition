@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:codit_competition/Trivia/teams.dart';
+import 'package:codit_competition/questions.dart';
 import 'package:codit_competition/screens/competition_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,10 +12,14 @@ class Team1vsteam2screen extends StatefulWidget {
     required this.competition,
     required this.team1,
     required this.team2,
+    this.questions = generalQuestions,
+    this.answers = generalAnswers,
   });
   final Club competition;
   final String team1;
   final String team2;
+  final List<String> questions;
+  final List<List<String>> answers;
   @override
   State<Team1vsteam2screen> createState() => _Team1vsteam2screenState();
 }
@@ -41,6 +46,8 @@ class _Team1vsteam2screenState extends State<Team1vsteam2screen> {
           MaterialPageRoute(
             builder:
                 (context) => CompetitionScreen(
+                  questions: widget.questions,
+                  answers: widget.answers,
                   competitionType: comp,
                   team1: widget.team1,
                   team2: widget.team2,

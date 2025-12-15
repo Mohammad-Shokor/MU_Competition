@@ -1,4 +1,5 @@
 import 'package:codit_competition/Trivia/startScreen.dart';
+import 'package:codit_competition/screens/default_Competition_Start_Screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,7 +13,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Startscreen(),
+      home: DefaultCompetitionStartScreen(),
     );
   }
 }
