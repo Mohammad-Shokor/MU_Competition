@@ -251,30 +251,35 @@ class _DefaultCompetitionStartScreenState
                   ],
                 ),
               )
-              : FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return Createchallenge();
-                      },
-                    ),
-                  );
-                },
-                backgroundColor: Colors.black.withOpacity(0.4),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
+              : SizedBox(
+                height: 67, // 👈 increase size
+                width: 67,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Createchallenge(),
+                      ),
+                    );
+                  },
+                  backgroundColor: Colors.black.withOpacity(0.4),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40), // keeps it round
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    spacing: 8,
-                    children: [
-                      Icon(Icons.edit, color: Colors.white),
+                    children: const [
+                      Icon(Icons.edit, color: Colors.white, size: 24),
+                      SizedBox(height: 4),
                       Text(
-                        "Create your own",
+                        "Create",
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 8, color: Colors.white),
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.white,
+                          height: 1.1,
+                        ),
                       ),
                     ],
                   ),
