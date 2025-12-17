@@ -111,118 +111,127 @@ class _ResultsScreenMobileState extends State<ResultsScreenMobile> {
                     height: height,
                     fit: BoxFit.cover,
                   ),
-                  Column(
-                    children: [
-                      const SizedBox(height: 60),
+                  Center(
+                    child: SizedBox(
+                      width: width > 700 ? width * 0.6 : double.infinity,
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 60),
 
-                      /// 🔥 TITLE
-                      Text(
-                        "Top Contestants",
-                        style: GoogleFonts.aBeeZee(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: width > 700 ? 60 : 34,
-                        ),
-                      ),
+                          /// 🔥 TITLE
+                          Text(
+                            "Top Contestants",
+                            style: GoogleFonts.aBeeZee(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: width > 700 ? 60 : 34,
+                            ),
+                          ),
 
-                      const SizedBox(height: 20),
+                          const SizedBox(height: 20),
 
-                      /// 🔥 Leaderboard List
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: topPlayers.length,
-                          itemBuilder: (context, index) {
-                            final player = topPlayers[index];
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 8,
-                                horizontal: 20,
-                              ),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 14,
-                                  horizontal: 16,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16),
-                                  gradient: const LinearGradient(
-                                    colors: [
-                                      Color.fromARGB(255, 5, 59, 104),
-                                      Colors.blue,
-                                    ],
+                          /// 🔥 Leaderboard List
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: topPlayers.length,
+                              itemBuilder: (context, index) {
+                                final player = topPlayers[index];
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                    horizontal: 20,
                                   ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.15),
-                                      blurRadius: 6,
-                                      offset: const Offset(0, 4),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 14,
+                                      horizontal: 16,
                                     ),
-                                  ],
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    /// 🥇 Medal or numbering
-                                    Row(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color.fromARGB(255, 5, 59, 104),
+                                          Colors.blue,
+                                        ],
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.15),
+                                          blurRadius: 6,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        _medal(index),
-                                        const SizedBox(width: 10),
+                                        /// 🥇 Medal or numbering
+                                        Row(
+                                          children: [
+                                            _medal(index),
+                                            const SizedBox(width: 10),
+                                            Text(
+                                              player['Name'],
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+
                                         Text(
-                                          player['Name'],
+                                          player['Score'].toString(),
                                           style: const TextStyle(
                                             color: Colors.white,
-                                            fontSize: 20,
+                                            fontSize: 22,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ],
                                     ),
-
-                                    Text(
-                                      player['Score'].toString(),
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      /// 🔙 Back Button
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 30,
-                            vertical: 15,
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => DefaultCompetitionStartScreen(),
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                        child: const Text(
-                          "Go back to start",
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
-                      ),
+                          ),
 
-                      const SizedBox(height: 40),
-                    ],
+                          const SizedBox(height: 20),
+
+                          /// 🔙 Back Button
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 30,
+                                vertical: 15,
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) =>
+                                          DefaultCompetitionStartScreen(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              "Go back to start",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 40),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),

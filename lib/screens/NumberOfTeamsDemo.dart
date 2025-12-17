@@ -13,7 +13,7 @@ class Numberofteamsdemo extends StatefulWidget {
 }
 
 class _NumberofteamsdemoState extends State<Numberofteamsdemo> {
-  int size = 4;
+  int size = 1;
   bool DarkMode = true;
   final List<String> backgroundSource = [
     "assets/Background.json",
@@ -128,58 +128,60 @@ class _NumberofteamsdemoState extends State<Numberofteamsdemo> {
             ),
             width: width > 700 ? width / 3 : 300,
             child: Column(
-              spacing: 10,
+              spacing: 20,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Number of teams:",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(width: 30),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.black26,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white30),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<int>(
-                          value: size,
-                          dropdownColor: Colors.grey[900],
-                          icon: const Icon(
-                            Icons.arrow_drop_down,
+                width > 700
+                    ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Number of teams:",
+                          style: TextStyle(
                             color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
                           ),
-                          items:
-                              [1, 2, 4].map((teamSize) {
-                                return DropdownMenuItem<int>(
-                                  value: teamSize,
-                                  child: Text(
-                                    "$teamSize",
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 22,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                          onChanged: (value) {
-                            setState(() => size = value!);
-                          },
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-                Divider(color: Colors.white),
+                        const SizedBox(width: 30),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.black26,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.white30),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<int>(
+                              value: size,
+                              dropdownColor: Colors.grey[900],
+                              icon: const Icon(
+                                Icons.arrow_drop_down,
+                                color: Colors.white,
+                              ),
+                              items:
+                                  [1, 2, 4].map((teamSize) {
+                                    return DropdownMenuItem<int>(
+                                      value: teamSize,
+                                      child: Text(
+                                        "$teamSize",
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 22,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                              onChanged: (value) {
+                                setState(() => size = value!);
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                    : Container(),
+                width > 700 ? Divider(color: Colors.white) : Container(),
                 singleChoiceQuestion(width, height),
                 ElevatedButton(
                   onPressed: _saveTeams,
@@ -202,7 +204,7 @@ class _NumberofteamsdemoState extends State<Numberofteamsdemo> {
                     ),
                   ),
                   child: Text(
-                    "Save Challenge",
+                    "Start Challenge",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.aBeeZee(
                       color: Colors.white,
@@ -224,7 +226,8 @@ class _NumberofteamsdemoState extends State<Numberofteamsdemo> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          "Choose a Background",
+          "Choose a Background:",
+          textAlign: TextAlign.center,
           style: TextStyle(fontSize: 20, color: Colors.white),
         ),
         const SizedBox(height: 20),

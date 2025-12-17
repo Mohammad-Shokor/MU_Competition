@@ -17,11 +17,13 @@ class CompetitionScreenMobile extends StatefulWidget {
     this.questions = generalQuestions,
     this.answers = generalAnswers,
   });
+
   final Club competitionType;
   final String userName;
   final String Background;
   final List<String> questions;
   final List<List<String>> answers;
+
   @override
   State<CompetitionScreenMobile> createState() => _CompetitionScreenState();
 }
@@ -29,30 +31,24 @@ class CompetitionScreenMobile extends StatefulWidget {
 class _CompetitionScreenState extends State<CompetitionScreenMobile>
     with SingleTickerProviderStateMixin {
   int index = 0;
+  int userScore = 0;
+  int _secondsRemaining = 20;
+
+  Timer? _timer;
+  Color timerColor = Colors.black.withOpacity(0.4);
 
   late List<String> question;
   late List<List<String>> answers;
   late List<String> shownQuestions;
   late List<List<String>> shownAnswers;
 
-  late String userName = widget.userName;
-  int userScore = 0;
-
-  int _secondsRemaining = 10;
-  Timer? _timer;
-  int currentTeam = 1;
-  Color timerColor = Colors.black.withOpacity(0.4);
-  bool check = true;
   bool buttonsEnabled = false;
   String? selectedAnswer;
-
-  late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
 
-    // Set questions and answers based on competition type
     question =
         widget.competitionType == Club.Custom
             ? widget.questions
@@ -71,102 +67,54 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
             ? businessAnswers
             : generalAnswers;
 
-    // Shuffle questions
-    shownQuestions = List.from(question);
-    shownQuestions.shuffle();
-
-    shownAnswers =
-        answers.map((answerList) {
-          List<String> shuffled = List.from(answerList);
-          shuffled.shuffle();
-          return shuffled;
-        }).toList();
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 10),
-    )..repeat(reverse: true);
+    shownQuestions = List.from(question)..shuffle();
+    shownAnswers = answers.map((a) => List<String>.from(a)..shuffle()).toList();
 
     loadNextQuestion();
     startTimer();
   }
 
-  // ----------------------------------------------------------
-  // LOAD NEXT QUESTION (buttons locked 3 secs)
-  // ----------------------------------------------------------
   void loadNextQuestion() {
     setState(() {
-      timerColor = Colors.black.withOpacity(0.4);
       selectedAnswer = null;
       buttonsEnabled = false;
+      timerColor = Colors.black.withOpacity(0.4);
     });
 
-    Future.delayed(const Duration(seconds: 1), () {
-      if (!mounted) return;
-      setState(() {
-        buttonsEnabled = true;
-      });
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (mounted) {
+        setState(() => buttonsEnabled = true);
+      }
     });
   }
 
-  // ----------------------------------------------------------
-  // FIXED TIMER
-  // ----------------------------------------------------------
   void startTimer() {
     _timer?.cancel();
-    _secondsRemaining = 15;
+    _secondsRemaining = 20;
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_secondsRemaining <= 0) {
         timer.cancel();
-
-        setState(() {
-          currentTeam = currentTeam == 1 ? 2 : 1;
-          timerColor = Colors.black.withOpacity(0.4);
-        });
-
-        if (!mounted) return;
-
-        index++;
-
-        if (index >= question.length) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) =>
-                      ResultsScreenMobile(name: userName, score: userScore),
-            ),
-          );
-          return;
-        }
-
-        loadNextQuestion();
-        startTimer();
+        nextQuestion();
         return;
-      } else if (_secondsRemaining <= 6) {
-        setState(() {
-          double t = (6 - _secondsRemaining) / 6; // goes from 0 → 1
-          timerColor =
-              Color.lerp(
-                Colors.black.withOpacity(0.4),
-                const Color.fromARGB(255, 144, 33, 33),
-                t,
-              )!;
-        });
       }
 
-      setState(() {
-        _secondsRemaining--;
-      });
+      if (_secondsRemaining <= 6) {
+        double t = (6 - _secondsRemaining) / 6;
+        timerColor =
+            Color.lerp(
+              Colors.black.withOpacity(0.4),
+              const Color.fromARGB(255, 144, 33, 33),
+              t,
+            )!;
+      }
+
+      setState(() => _secondsRemaining--);
     });
   }
 
-  // ----------------------------------------------------------
-  // ANSWER LOGIC
-  // ----------------------------------------------------------
   void answerQuestion(String answer) async {
-    if (_secondsRemaining == 0) return;
+    if (!buttonsEnabled) return;
 
     _timer?.cancel();
 
@@ -175,45 +123,22 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
       buttonsEnabled = false;
     });
 
-    // Correct answer is always the first in the original answers list
     bool isCorrect = answer == answers[index][0];
-
-    if (isCorrect) {
-      userScore++;
-
-      await Future.delayed(const Duration(seconds: 2));
-
-      index++;
-
-      if (index >= question.length) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) =>
-                    ResultsScreenMobile(name: userName, score: userScore),
-          ),
-        );
-        return;
-      }
-
-      loadNextQuestion();
-      startTimer();
-      return;
-    }
+    if (isCorrect) userScore++;
 
     await Future.delayed(const Duration(seconds: 2));
+    nextQuestion();
+  }
 
-    currentTeam = currentTeam == 1 ? 2 : 1;
+  void nextQuestion() {
     index++;
-
     if (index >= question.length) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder:
-              (context) =>
-                  ResultsScreenMobile(name: userName, score: userScore),
+              (_) =>
+                  ResultsScreenMobile(name: widget.userName, score: userScore),
         ),
       );
       return;
@@ -226,17 +151,16 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
   @override
   void dispose() {
     _timer?.cancel();
-    _controller.dispose();
     super.dispose();
   }
 
-  // ----------------------------------------------------------
-  // UI
-  // ----------------------------------------------------------
+  // ================= UI =================
+
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+    final bool isWeb = width > 700;
 
     return Scaffold(
       body: Stack(
@@ -247,250 +171,429 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
             height: height,
             fit: BoxFit.cover,
           ),
-          Positioned(
-            top: -50,
-            child: Container(
-              width: 450,
-              height: 450,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    Colors.blueAccent.withOpacity(0.33),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -40,
-            child: Container(
-              width: 450,
-              height: 450,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [Colors.cyan.withOpacity(0.28), Colors.transparent],
-                ),
-              ),
-            ),
-          ),
-          Center(
-            child: SizedBox(
-              width: width > 700 ? double.infinity : width * 0.85,
-              child: Column(
-                children: [
-                  SizedBox(height: 50),
-                  // QUESTION
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.4),
-                      borderRadius: BorderRadius.circular(25),
-                      border: Border.all(
-                        color: Colors.white.withAlpha(70),
-                        width: 3,
-                      ),
-                    ),
-                    child: Text(
-                      question[index],
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.aBeeZee(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: width > 700 ? 40 : 24,
-                      ),
+
+          width > 700
+              ? Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 1100),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 40),
+
+                        // WEB TOP BAR
+                        if (isWeb)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              buildTimer(isWeb),
+                              buildScoreCard(widget.userName, userScore, width),
+                            ],
+                          ),
+
+                        const SizedBox(height: 100),
+
+                        // QUESTION
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.4),
+                            borderRadius: BorderRadius.circular(25),
+                            border: Border.all(
+                              color: Colors.white.withAlpha(70),
+                              width: 3,
+                            ),
+                          ),
+                          child: Text(
+                            shownQuestions[index],
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.aBeeZee(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: isWeb ? 40 : 24,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 30),
+
+                        // ANSWERS
+                        Expanded(
+                          child:
+                              isWeb
+                                  ? GridView.builder(
+                                    itemCount: shownAnswers[index].length,
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          crossAxisSpacing: 20,
+                                          mainAxisSpacing: 20,
+                                          childAspectRatio: 4.5,
+                                        ),
+                                    itemBuilder:
+                                        (_, i) => buildAnswerButton(
+                                          shownAnswers[index][i],
+                                        ),
+                                  )
+                                  : Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children:
+                                        shownAnswers[index]
+                                            .map(buildAnswerButton)
+                                            .toList(),
+                                  ),
+                        ),
+
+                        // MOBILE TIMER + SCORE
+                        if (!isWeb) ...[
+                          const SizedBox(height: 10),
+                          buildTimer(isWeb),
+                          const SizedBox(height: 10),
+                          buildScoreCard(widget.userName, userScore, width),
+                        ],
+
+                        const SizedBox(height: 30),
+                      ],
                     ),
                   ),
-                  SizedBox(height: 30),
-                  // ANSWERS
-                  Expanded(
-                    child: Column(
-                      spacing: 15,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children:
-                          shownAnswers[index].map((answer) {
-                            return SizedBox(
-                              width: width > 700 ? width * 0.48 : width * 0.85,
-                              height: height * 0.07,
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.resolveWith((
-                                        states,
-                                      ) {
-                                        if (answer == selectedAnswer) {
-                                          bool isCorrect =
-                                              answer == answers[index][0];
-                                          return isCorrect
-                                              ? Colors.green.withOpacity(0.8)
-                                              : Colors.red.withOpacity(0.8);
-                                        }
-                                        if (states.contains(
-                                          MaterialState.disabled,
-                                        )) {
-                                          return Colors.blueGrey.withOpacity(
-                                            0.3,
-                                          );
-                                        }
-                                        return Colors.black.withOpacity(0.4);
-                                      }),
-                                  foregroundColor:
-                                      MaterialStateProperty.resolveWith((
-                                        states,
-                                      ) {
-                                        if (states.contains(
-                                          MaterialState.disabled,
-                                        )) {
-                                          return Colors.white.withOpacity(0.5);
-                                        }
-                                        return Colors.white;
-                                      }),
-                                  shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
+                ),
+              )
+              : Center(
+                child: SizedBox(
+                  width: width * 0.8,
+                  child: Column(
+                    children: [
+                      SizedBox(height: 50),
+                      // QUESTION
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.4),
+                          borderRadius: BorderRadius.circular(25),
+                          border: Border.all(
+                            color: Colors.white.withAlpha(70),
+                            width: 3,
+                          ),
+                        ),
+                        child: Text(
+                          question[index],
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.aBeeZee(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: width > 700 ? 40 : 24,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 30),
+                      // ANSWERS
+                      Expanded(
+                        child: Column(
+                          spacing: 15,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children:
+                              shownAnswers[index].map((answer) {
+                                return SizedBox(
+                                  width:
+                                      width > 700 ? width * 0.48 : width * 0.85,
+                                  height: height * 0.07,
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.resolveWith((
+                                            states,
+                                          ) {
+                                            if (answer == answers[index][0] &&
+                                                selectedAnswer != null) {
+                                              return Colors.green.withOpacity(
+                                                0.8,
+                                              );
+                                            }
+                                            if (answer == selectedAnswer) {
+                                              return Colors.red.withOpacity(
+                                                0.8,
+                                              );
+                                            }
+                                            if (states.contains(
+                                              MaterialState.disabled,
+                                            )) {
+                                              return Colors.blueGrey
+                                                  .withOpacity(0.3);
+                                            }
+                                            return Colors.black.withOpacity(
+                                              0.4,
+                                            );
+                                          }),
+                                      foregroundColor:
+                                          MaterialStateProperty.resolveWith((
+                                            states,
+                                          ) {
+                                            if (states.contains(
+                                              MaterialState.disabled,
+                                            )) {
+                                              return Colors.white.withOpacity(
+                                                0.5,
+                                              );
+                                            }
+                                            return Colors.white;
+                                          }),
+                                      shape: MaterialStateProperty.all(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                                onPressed:
-                                    buttonsEnabled
-                                        ? () => answerQuestion(answer)
-                                        : null,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: FittedBox(
-                                    child: Text(
-                                      answer,
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.aBeeZee(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 21,
+                                    onPressed:
+                                        buttonsEnabled
+                                            ? () => answerQuestion(answer)
+                                            : null,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5),
+                                      child: FittedBox(
+                                        child: Text(
+                                          answer,
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.aBeeZee(
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white,
+                                            fontSize: 21,
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      padding: const EdgeInsets.all(16),
-
-                      width: width > 600 ? 0.11 * width : 90,
-                      height: width > 600 ? 0.11 * width : 90,
-
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: timerColor,
-
-                        borderRadius: BorderRadius.circular(50),
-                        boxShadow:
-                            timerColor != Colors.black.withOpacity(0.4)
-                                ? [
-                                  BoxShadow(
-                                    color: Colors.redAccent.withOpacity(0.6),
-                                    blurRadius: 12,
-                                    spreadRadius: 1,
-                                  ),
-                                ]
-                                : [],
-                      ),
-                      child: Text(
-                        "$_secondsRemaining",
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.aBeeZee(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-
-                          fontSize: width > 700 ? 90 : 40,
+                                );
+                              }).toList(),
                         ),
                       ),
-                    ),
-                  ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 300),
+                                margin: const EdgeInsets.symmetric(vertical: 8),
+                                padding: const EdgeInsets.all(16),
 
-                  buildScoreCard(userName, userScore, width),
-                  SizedBox(height: width * 0.1),
-                ],
-              ),
-            ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DefaultCompetitionStartScreen(),
+                                width: width > 600 ? 0.11 * width : 90,
+                                height: width > 600 ? 0.11 * width : 90,
+
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: timerColor,
+
+                                  borderRadius: BorderRadius.circular(50),
+                                  boxShadow:
+                                      timerColor !=
+                                              Colors.black.withOpacity(0.4)
+                                          ? [
+                                            BoxShadow(
+                                              color: Colors.redAccent
+                                                  .withOpacity(0.6),
+                                              blurRadius: 12,
+                                              spreadRadius: 1,
+                                            ),
+                                          ]
+                                          : [],
+                                ),
+                                child: Text(
+                                  "$_secondsRemaining",
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.aBeeZee(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+
+                                    fontSize: width > 700 ? 60 : 40,
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            buildScoreCard(widget.userName, userScore, width),
+                          ],
+                        ),
                       ),
-                    );
-                  },
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+
+                      SizedBox(height: width > 700 ? 50 : width * 0.08),
+                    ],
+                  ),
                 ),
               ),
-            ],
+
+          Positioned(
+            top: 10,
+            left: 10,
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => DefaultCompetitionStartScreen(),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget buildScoreCard(String name, int score, double width) {
-    return Container(
-      padding: EdgeInsets.all(10),
+  // ================= WIDGETS =================
+
+  Widget buildTimer(bool isWeb) {
+    final double size = isWeb ? 110 : 90;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      width: size,
+      height: size,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
-        // ignore: deprecated_member_use
-        color: Colors.black.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(25),
-        border: Border.all(color: Colors.white.withAlpha(70), width: 3),
+        color: timerColor,
+        borderRadius: BorderRadius.circular(50),
+        boxShadow:
+            timerColor != Colors.black.withOpacity(0.4)
+                ? [
+                  BoxShadow(
+                    color: Colors.redAccent.withOpacity(0.6),
+                    blurRadius: 12,
+                  ),
+                ]
+                : [],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: SizedBox(
-              width: width * 0.3,
-              height: width * 0.1,
-              child: FittedBox(
-                child: Text(
-                  name,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.aBeeZee(color: Colors.white, fontSize: 16),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 50,
-            child: VerticalDivider(
-              color: Colors.white,
-              thickness: 3,
-              width: 20,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              "$score",
-              textAlign: TextAlign.center,
-              style: GoogleFonts.aBeeZee(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 40,
-              ),
-            ),
-          ),
-        ],
+      child: Text(
+        "$_secondsRemaining",
+        style: GoogleFonts.aBeeZee(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: isWeb ? 50 : 36,
+        ),
       ),
     );
+  }
+
+  Widget buildAnswerButton(String answer) {
+    return ElevatedButton(
+      onPressed: buttonsEnabled ? () => answerQuestion(answer) : null,
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.resolveWith((states) {
+          if (answer == answers[index][0] && selectedAnswer != null) {
+            return Colors.green.withOpacity(0.8);
+          }
+          if (answer == selectedAnswer) {
+            return Colors.red.withOpacity(0.8);
+          }
+          return Colors.black.withOpacity(0.4);
+        }),
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+      ),
+      child: Text(
+        answer,
+        textAlign: TextAlign.center,
+        style: GoogleFonts.aBeeZee(fontSize: 20, color: Colors.white),
+      ),
+    );
+  }
+
+  Widget buildScoreCard(String name, int score, double width) {
+    return width > 700
+        ? Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(25),
+            border: Border.all(color: Colors.white.withAlpha(70), width: 3),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  name,
+                  style: GoogleFonts.aBeeZee(color: Colors.white, fontSize: 50),
+                ),
+              ),
+              const SizedBox(
+                height: 50,
+                child: VerticalDivider(
+                  color: Colors.white,
+                  thickness: 2,
+                  width: 20,
+                ),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Text(
+                  "$score",
+                  style: GoogleFonts.aBeeZee(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 50,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )
+        : Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            // ignore: deprecated_member_use
+            color: Colors.black.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(25),
+            border: Border.all(color: Colors.white.withAlpha(70), width: 3),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: SizedBox(
+                  width: width > 700 ? width * 0.1 : width * 0.3,
+                  height: width > 700 ? width * 0.03 : width * 0.1,
+                  child: FittedBox(
+                    child: Text(
+                      name,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.aBeeZee(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 50,
+                child: VerticalDivider(
+                  color: Colors.white,
+                  thickness: 3,
+                  width: 20,
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  "$score",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.aBeeZee(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 40,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
   }
 }

@@ -255,7 +255,10 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 20),
                 child: TextField(
-                  controller: _teamControllers[index],
+                  controller:
+                      widget.size == 1
+                          ? _UserNameController
+                          : _teamControllers[index],
                   maxLength: 14,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
@@ -279,7 +282,7 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
             }),
             const SizedBox(height: 30),
             ElevatedButton(
-              onPressed: _saveTeams,
+              onPressed: widget.size == 1 ? _saveUserName : _saveTeams,
               style: ElevatedButton.styleFrom(
                 backgroundColor:
                     DarkMode

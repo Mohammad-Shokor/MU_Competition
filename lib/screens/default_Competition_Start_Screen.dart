@@ -152,7 +152,7 @@ class _DefaultCompetitionStartScreenState
                                 context,
                                 Club.Code_it,
                                 Lottie.asset("assets/ComputerScience2.json"),
-                                TeamInputScreen(competition: Club.Code_it),
+                                Numberofteamsdemo(competition: Club.Code_it),
                                 width,
                               ),
 
@@ -160,7 +160,7 @@ class _DefaultCompetitionStartScreenState
                                 context,
                                 Club.MUBC,
                                 Lottie.asset("assets/Business.json"),
-                                TeamInputScreen(competition: Club.MUBC),
+                                Numberofteamsdemo(competition: Club.MUBC),
                                 width,
                               ),
                               Column(
@@ -181,7 +181,7 @@ class _DefaultCompetitionStartScreenState
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) {
-                                              return TeamInputScreen(
+                                              return Numberofteamsdemo(
                                                 competition: Club.Mix,
                                               );
                                             },
