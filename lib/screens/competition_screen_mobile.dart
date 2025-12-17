@@ -126,7 +126,7 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
     bool isCorrect = answer == answers[index][0];
     if (isCorrect) userScore++;
 
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 3));
     nextQuestion();
   }
 
