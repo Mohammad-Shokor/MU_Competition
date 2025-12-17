@@ -3,22 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
-class Createchallenge extends StatefulWidget {
-  const Createchallenge({super.key});
+class Numberofteamsdemo extends StatefulWidget {
+  const Numberofteamsdemo({super.key});
 
   @override
-  State<Createchallenge> createState() => _CreatechallengeState();
+  State<Numberofteamsdemo> createState() => _NumberofteamsdemoState();
 }
 
-class _CreatechallengeState extends State<Createchallenge> {
+class _NumberofteamsdemoState extends State<Numberofteamsdemo> {
   int size = 4;
   bool DarkMode = true;
-  late String ChallengeName;
   final _challengeNameController = TextEditingController();
   final List<String> backgroundSource = [
     "assets/Background.json",
     "assets/wavyLines.json",
-    "assets/darkgradient.json",
   ];
   late String ChosenBackground;
 
@@ -29,26 +27,6 @@ class _CreatechallengeState extends State<Createchallenge> {
   }
 
   Future<void> _saveTeams() async {
-    ChallengeName = _challengeNameController.text.trim();
-    if (ChallengeName.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text(
-            "Please fill all fields",
-            style: TextStyle(fontSize: 16, color: Colors.white),
-          ),
-          backgroundColor: Colors.redAccent,
-          behavior: SnackBarBehavior.floating, // makes it float above UI
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          duration: const Duration(seconds: 3),
-        ),
-      );
-
-      return;
-    }
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -83,13 +61,6 @@ class _CreatechallengeState extends State<Createchallenge> {
       MaterialPageRoute(
         builder: (ctx) {
           return QuestionSourceScreen(size: size, Background: ChosenBackground);
-          //  size < 4
-          // ? TeamInputScreen(
-          //   competition: Club.Code_it,
-          //   size: size,
-          //   Background: ChosenBackground,
-          // )
-          //     : TeamInputScreenWeb(size: size);
         },
       ),
     );
@@ -155,36 +126,11 @@ class _CreatechallengeState extends State<Createchallenge> {
               color: containerColor,
               borderRadius: BorderRadius.circular(50),
             ),
-            width: width > 700 ? width / 3 : 300,
+            width: width > 700 ? 500 : 300,
             child: Column(
               spacing: 10,
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextField(
-                  controller: _challengeNameController,
-                  maxLength: 20,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    labelText: "Challenge Name",
-                    labelStyle: TextStyle(color: Colors.white),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    counterStyle: TextStyle(
-                      color:
-                          Colors.white, // Change the color of the counter here
-                      fontWeight:
-                          FontWeight
-                              .bold, // You can also customize other text styles
-                    ),
-                  ),
-                ),
-                Divider(color: Colors.white),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -295,11 +241,11 @@ class _CreatechallengeState extends State<Createchallenge> {
                   });
                 },
                 child: AnimatedContainer(
-                  width: width > 700 ? width / 11 : width / 8,
+                  width: width / 8,
                   height: height / 6,
                   duration: const Duration(milliseconds: 300),
                   margin: const EdgeInsets.symmetric(vertical: 8),
-                  padding: EdgeInsets.all(width > 700 ? 8 : 4),
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color:
                         selectedOption == i
@@ -317,8 +263,7 @@ class _CreatechallengeState extends State<Createchallenge> {
                             ]
                             : [],
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
+                  child: ClipRect(
                     child: Lottie.asset(backgroundSource[i], fit: BoxFit.fill),
                   ),
                 ),
