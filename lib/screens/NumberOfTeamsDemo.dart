@@ -1,11 +1,13 @@
-import 'package:codit_competition/Trivia/CreateQuestions.dart';
+import 'package:codit_competition/Trivia/teams.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
-class Numberofteamsdemo extends StatefulWidget {
-  const Numberofteamsdemo({super.key});
+import 'InitialiseUsers.dart';
 
+class Numberofteamsdemo extends StatefulWidget {
+  const Numberofteamsdemo({super.key, required this.competition});
+  final Club competition;
   @override
   State<Numberofteamsdemo> createState() => _NumberofteamsdemoState();
 }
@@ -13,10 +15,10 @@ class Numberofteamsdemo extends StatefulWidget {
 class _NumberofteamsdemoState extends State<Numberofteamsdemo> {
   int size = 4;
   bool DarkMode = true;
-  final _challengeNameController = TextEditingController();
   final List<String> backgroundSource = [
     "assets/Background.json",
     "assets/wavyLines.json",
+    "assets/Background_shooting_star.json",
   ];
   late String ChosenBackground;
 
@@ -60,16 +62,14 @@ class _NumberofteamsdemoState extends State<Numberofteamsdemo> {
       context,
       MaterialPageRoute(
         builder: (ctx) {
-          return QuestionSourceScreen(size: size, Background: ChosenBackground);
+          return TeamInputScreen(
+            competition: Club.Code_it,
+            size: size,
+            Background: ChosenBackground,
+          );
         },
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _challengeNameController.dispose();
   }
 
   @override
@@ -126,7 +126,7 @@ class _NumberofteamsdemoState extends State<Numberofteamsdemo> {
               color: containerColor,
               borderRadius: BorderRadius.circular(50),
             ),
-            width: width > 700 ? 500 : 300,
+            width: width > 700 ? width / 3 : 300,
             child: Column(
               spacing: 10,
               mainAxisSize: MainAxisSize.min,
@@ -241,11 +241,11 @@ class _NumberofteamsdemoState extends State<Numberofteamsdemo> {
                   });
                 },
                 child: AnimatedContainer(
-                  width: width / 8,
+                  width: width > 700 ? width / 11 : width / 8,
                   height: height / 6,
                   duration: const Duration(milliseconds: 300),
                   margin: const EdgeInsets.symmetric(vertical: 8),
-                  padding: const EdgeInsets.all(8),
+                  padding: EdgeInsets.all(width > 700 ? 8 : 4),
                   decoration: BoxDecoration(
                     color:
                         selectedOption == i
@@ -263,7 +263,8 @@ class _NumberofteamsdemoState extends State<Numberofteamsdemo> {
                             ]
                             : [],
                   ),
-                  child: ClipRect(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
                     child: Lottie.asset(backgroundSource[i], fit: BoxFit.fill),
                   ),
                 ),
