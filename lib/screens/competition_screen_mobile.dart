@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:codit_competition/Trivia/teams.dart';
 import 'package:codit_competition/screens/default_Competition_Start_Screen.dart';
+import 'package:codit_competition/screens/resultScreenOpenDay.dart';
 import 'package:codit_competition/screens/result_screen_mobile.dart';
+import 'package:codit_competition/screens/results_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -16,6 +19,7 @@ class CompetitionScreenMobile extends StatefulWidget {
     this.Background = "assets/Background.json",
     this.questions = generalQuestions,
     this.answers = generalAnswers,
+    required this.OpenDay,
   });
 
   final Club competitionType;
@@ -23,6 +27,7 @@ class CompetitionScreenMobile extends StatefulWidget {
   final String Background;
   final List<String> questions;
   final List<List<String>> answers;
+  final bool OpenDay;
 
   @override
   State<CompetitionScreenMobile> createState() => _CompetitionScreenState();
@@ -48,7 +53,7 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
   @override
   void initState() {
     super.initState();
-
+    if (widget.OpenDay) index = Random().nextInt(7);
     question =
         widget.competitionType == Club.Custom
             ? widget.questions
@@ -127,6 +132,19 @@ class _CompetitionScreenState extends State<CompetitionScreenMobile>
     if (isCorrect) userScore++;
 
     await Future.delayed(const Duration(seconds: 3));
+    if (widget.OpenDay) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) => Resultscreenopenday(
+                team1Score: userScore,
+                team1Name: widget.userName,
+              ),
+        ),
+      );
+    }
+
     nextQuestion();
   }
 

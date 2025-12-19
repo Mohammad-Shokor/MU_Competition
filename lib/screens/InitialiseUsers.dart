@@ -30,7 +30,7 @@ class TeamInputScreen extends StatefulWidget {
 class _TeamInputScreenState extends State<TeamInputScreen> {
   final _UserNameController = TextEditingController();
   bool DarkMode = true;
-
+  bool OpenDay = true;
   late List<TextEditingController> _teamControllers;
   late List<String> teams;
 
@@ -81,6 +81,7 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
               questions: widget.questions,
               answers: widget.answers,
               userName: userName,
+              OpenDay: OpenDay,
             ),
       ),
     );
@@ -113,6 +114,7 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
                       questions: widget.questions,
                       answers: widget.answers,
                       userName: userName,
+                      OpenDay: OpenDay,
                     )
                     : widget.size == 2
                     ? Team1vsteam2screen(
@@ -185,7 +187,51 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          spacing: 25,
           children: [
+            Row(
+              children: [
+                Text(
+                  "OpenDay:",
+                  style: const TextStyle(color: Colors.white, fontSize: 22),
+                ),
+                Spacer(),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.black26,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.white30),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<bool>(
+                      value: OpenDay,
+                      dropdownColor: Colors.grey[900],
+                      icon: const Icon(
+                        Icons.arrow_drop_down,
+                        color: Colors.white,
+                      ),
+                      items:
+                          [true, false].map((openday) {
+                            return DropdownMenuItem<bool>(
+                              value: openday,
+                              child: Text(
+                                openday ? "True" : "False",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                      onChanged: (value) {
+                        setState(() => OpenDay = value!);
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
             TextField(
               controller: _UserNameController,
               maxLength: 14,
@@ -207,7 +253,6 @@ class _TeamInputScreenState extends State<TeamInputScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 30),
             ElevatedButton(
               onPressed: _saveUserName,
               style: ElevatedButton.styleFrom(
